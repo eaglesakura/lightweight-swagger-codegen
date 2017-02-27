@@ -1,4 +1,8 @@
-# Swagger code gen
+# Light Weight Swagger codegen
+
+## Support platform.
+
+ * Android
 
 ## LICENSE
 
