@@ -1,0 +1,100 @@
+{{>licenseInfo}}
+package {{package}};
+
+import {{modelPackage}}.*;
+
+import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+
+import android.support.annotation.*;
+import com.eaglesakura.swagger.*;
+
+{{#operations}}
+public class {{classname}} {
+  String basePath = "{{basePath}}";
+
+  public void setBasePath(@NonNull String basePath) {
+    this.basePath = basePath;
+  }
+
+  @NonNull
+  public String getBasePath() {
+    return basePath;
+  }
+
+  @NonNull
+  protected String parameterToString(@Nullable Object obj) {
+    return SwaggerUtil.parameterToString(obj);
+  }
+
+  @NonNull
+  protected DataPayload toFormPayload(Map<String, String> form) {
+    return SwaggerUtil.newFormPayload(form);
+  }
+
+  @NonNull
+  protected DataPayload toJsonPayload(Object obj) {
+    return SwaggerUtil.newJsonPayload(obj);
+  }
+
+  @NonNull
+  protected String escapeString(Object obj) {
+    return SwaggerUtil.escapeString(obj);
+  }
+
+  {{#operation}}
+  /**
+   * {{summary}}
+   * {{notes}}
+{{#allParams}}   * @param {{paramName}} {{description}}
+{{/allParams}}   * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+   */
+  public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (ApiInvoker invoker{{#allParams}}{{#-first}}, {{/-first}}{{#required}}@NonNull {{/required}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws IOException {
+    {{#allParams}}
+
+    if(!new ParameterValidator({{paramName}})
+                {{#required}}.required(true){{/required}}
+                {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
+                {{#minLength}}.minLength({{minLength}}){{/minLength}}
+                {{#maxLength}}.minLength({{maxLength}}){{/maxLength}}
+                .valid()) {
+       throw new ParameterValidateFailedException("Missing the required parameter '{{paramName}}' when calling {{nickname}}");
+    }
+    {{/allParams}}
+
+    // create path and map variables
+    String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString({{{paramName}}})){{/pathParams}};
+    invoker.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
+    invoker.setMethod("{{httpMethod}}");
+
+    {{#queryParams}}
+    invoker.addQueryParam("{{baseName}}", parameterToString({{paramName}}));
+    {{/queryParams}}
+
+    {{#headerParams}}
+    invoker.addHeader("{{baseName}}", parameterToString({{paramName}}));
+    {{/headerParams}}
+
+    {{#formParams}}{{#notFile}}
+    // form params
+    Map<String, String> localVarFormParams = new HashMap<>();
+    localVarFormParams.put("{{baseName}}", parameterToString({{paramName}}));
+    invoker.setPayload(toFormPayload(localVarFormParams));
+    {{/notFile}}{{/formParams}}
+
+    {{#bodyParam}}
+    invoker.setPayload(toJsonPayload({{paramName}}));
+    {{/bodyParam}}
+
+    {{#returnType}}
+        return ({{{returnType}}}) SwaggerUtil.invoke(invoker, "{{returnContainer}}", {{returnBaseType}}.class, {{returnBaseType}}[].class);
+    {{/returnType}}{{^returnType}}
+        return SwaggerUtil.invoke(invoker, "{{returnContainer}}", Object.class, Object[].class);
+    {{/returnType}}
+  }
+  {{/operation}}
+}
+{{/operations}}

@@ -1,0 +1,80 @@
+package {{package}};
+
+{{#imports}}import {{import}};
+{{/imports}}
+
+import com.google.gson.annotations.*;
+import android.support.annotation.*;
+import com.eaglesakura.swagger.*;
+{{#models}}
+
+{{#model}}{{#description}}
+/**
+ * {{description}}
+ **/{{/description}}
+public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}} implements Validatable {
+  {{#vars}}{{#isEnum}}
+  @Keep
+  public enum {{datatypeWithEnum}} {
+    {{#allowableValues}}{{#values}}@Keep {{.}}, {{/values}}{{/allowableValues}}
+  };
+
+  {{#required}}@NonNull {{/required}}
+  @SerializedName("{{baseName}}")
+  public {{{datatypeWithEnum}}} {{name}} = {{{defaultValue}}};{{/isEnum}}{{^isEnum}}
+
+  {{#required}}@NonNull {{/required}}
+  @SerializedName("{{baseName}}")
+  public {{{datatype}}} {{name}} = {{{defaultValue}}};{{/isEnum}}{{/vars}}
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    {{classname}} {{classVarName}} = ({{classname}}) o;{{#hasVars}}
+    return {{#vars}}(this.{{name}} == null ? {{classVarName}}.{{name}} == null : this.{{name}}.equals({{classVarName}}.{{name}})){{#hasMore}} &&
+        {{/hasMore}}{{^hasMore}};{{/hasMore}}{{/vars}}{{/hasVars}}{{^hasVars}}
+    return true;{{/hasVars}}
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    {{#vars}}
+    result = 31 * result + (this.{{name}} == null ? 0: this.{{name}}.hashCode());
+    {{/vars}}
+    return result;
+  }
+
+  @Override
+  public String toString()  {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class {{classname}} {\n");
+    {{#parent}}sb.append("  " + super.toString()).append("\n");{{/parent}}
+    {{#vars}}sb.append("  {{name}}: ").append({{name}}).append("\n");
+    {{/vars}}sb.append("}\n");
+    return sb.toString();
+  }
+
+  @Override
+  public boolean valid() {
+    {{#vars}}
+    if(!new ParameterValidator({{name}})
+                {{#required}}.required(true){{/required}}
+                {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
+                {{#minLength}}.minLength({{minLength}}){{/minLength}}
+                {{#maxLength}}.minLength({{maxLength}}){{/maxLength}}
+                .valid()) {
+        return false;
+    }
+    {{/vars}}
+
+    return true;
+  }
+}
+{{/model}}
+{{/models}}
