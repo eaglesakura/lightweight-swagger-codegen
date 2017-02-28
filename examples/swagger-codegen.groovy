@@ -1,7 +1,7 @@
 #! groovy
 
 @GrabResolver(name = "eaglesakura", root = "http://eaglesakura.github.io/maven/")
-@Grab("com.eaglesakura:swagger-codegen-lw:1.0.+")
+@Grab("com.eaglesakura:swagger-codegen-lw:1.0.12")
 import java.lang.Object;
 
 static main(String[] args) {
