@@ -53,7 +53,6 @@ public class {{classname}} {
    */
   public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (ApiInvoker invoker{{#allParams}}{{#-first}}, {{/-first}}{{#required}}@NonNull {{/required}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws IOException {
     {{#allParams}}
-
     if(!new ParameterValidator({{paramName}})
                 {{#required}}.required(true){{/required}}
                 {{#pattern}}.pattern("{{pattern}}"){{/pattern}}

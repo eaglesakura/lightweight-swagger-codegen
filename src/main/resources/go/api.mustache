@@ -1,0 +1,81 @@
+package {{packageName}}
+
+import (
+	"gaefire"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/errors"
+)
+
+{{#operations}}
+{{#operation}}
+
+type {{{nickname}}}Params struct {
+{{#allParams}}
+	// {{description}}
+	{{paramName}}   *{{{dataType}}}
+{{/allParams}}
+}
+
+/**
+ * {{summary}}
+ * {{notes}}
+{{#allParams}} * @param {{paramName}} {{description}}
+{{/allParams}} * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+ */
+type {{{nickname}}}Handler func(request gaefire.RequestHandler, params *{{{nickname}}}Params) middleware.Responder
+
+func (it *{{{nickname}}}Params) Valid() bool {
+{{#allParams}}
+    if(!gaefire.NewValidator(it.{{paramName}}).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+                Valid()) {
+        return false;
+    }
+{{/allParams}}
+
+	return true
+}
+
+// Bind from request
+func New{{{nickname}}}Params(binder gaefire.RequestBinder) (*{{{nickname}}}Params, error) {
+    result := &{{{nickname}}}Params{}
+
+    {{#pathParams}}
+    if err := binder.BindPath("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/pathParams}}
+
+    {{#queryParams}}
+    if err := binder.BindQuery("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/queryParams}}
+
+    {{#headerParams}}
+    if err := binder.BindHeader("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/headerParams}}
+
+    {{#formParams}}
+    if err := binder.BindForm("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/formParams}}
+
+    {{#bodyParam}}
+    if err := binder.BindBody("{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/bodyParam}}
+
+    if !result.Valid() {
+	    return nil, errors.New(400 /* Bad Request */, "Parameter validate error")
+    }
+
+    return result, nil
+}
+
+{{/operation}}
+
+{{/operations}}
