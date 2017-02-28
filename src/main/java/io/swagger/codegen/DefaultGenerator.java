@@ -587,40 +587,6 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
             }
         }
 
-        // Consider .swagger-codegen-ignore a supporting file
-        // Output .swagger-codegen-ignore if it doesn't exist and wasn't explicitly created by a generator
-        final String swaggerCodegenIgnore = ".swagger-codegen-ignore";
-        String ignoreFileNameTarget = config.outputFolder() + File.separator + swaggerCodegenIgnore;
-        File ignoreFile = new File(ignoreFileNameTarget);
-        if (!ignoreFile.exists()) {
-            String ignoreFileNameSource = File.separator + config.getCommonTemplateDir() + File.separator + swaggerCodegenIgnore;
-            String ignoreFileContents = readResourceContents(ignoreFileNameSource);
-            try {
-                writeToFile(ignoreFileNameTarget, ignoreFileContents);
-            } catch (IOException e) {
-                throw new RuntimeException("Could not generate supporting file '" + swaggerCodegenIgnore + "'", e);
-            }
-            files.add(ignoreFile);
-        }
-
-        /*
-         * The following code adds default LICENSE (Apache-2.0) for all generators
-         * To use license other than Apache2.0, update the following file:
-         *   modules/swagger-codegen/src/main/resources/_common/LICENSE
-         *
-        final String apache2License = "LICENSE";
-        String licenseFileNameTarget = config.outputFolder() + File.separator + apache2License;
-        File licenseFile = new File(licenseFileNameTarget);
-        String licenseFileNameSource = File.separator + config.getCommonTemplateDir() + File.separator + apache2License;
-        String licenseFileContents = readResourceContents(licenseFileNameSource);
-        try {
-            writeToFile(licenseFileNameTarget, licenseFileContents);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not generate LICENSE file '" + apache2License + "'", e);
-        }
-        files.add(licenseFile);
-         */
-
     }
 
     private Map<String, Object> buildSupportFileBundle(List<Object> allOperations, List<Object> allModels) {
@@ -703,7 +669,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
         return files;
     }
 
-    private File processTemplateToFile(Map<String, Object> templateData, String templateName, String outputFilename) throws IOException {
+    protected File processTemplateToFile(Map<String, Object> templateData, String templateName, String outputFilename) throws IOException {
         String adjustedOutputFilename = outputFilename.replaceAll("//", "/").replace('/', File.separatorChar);
         if (ignoreProcessor.allowsFile(new File(adjustedOutputFilename))) {
             String templateFile = getFullTemplateFile(config, templateName);
@@ -925,7 +891,7 @@ public class DefaultGenerator extends AbstractGenerator implements Generator {
     }
 
 
-    private Map<String, Object> processModels(CodegenConfig config, Map<String, Model> definitions, Map<String, Model> allDefinitions) {
+    protected Map<String, Object> processModels(CodegenConfig config, Map<String, Model> definitions, Map<String, Model> allDefinitions) {
         Map<String, Object> objs = new HashMap<String, Object>();
         objs.put("package", config.modelPackage());
         List<Object> models = new ArrayList<Object>();

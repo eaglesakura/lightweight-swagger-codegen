@@ -10,22 +10,16 @@ import org.slf4j.LoggerFactory
 
 class AndroidCustomClientCodegen extends DefaultCodegen implements CodegenConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidCustomClientCodegen.class)
-    public static final String USE_ANDROID_MAVEN_GRADLE_PLUGIN = "useAndroidMavenGradlePlugin"
     protected String invokerPackage = "io.swagger.client"
     protected String groupId = "io.swagger"
     protected String artifactId = "swagger-android-client"
     protected String artifactVersion = "1.0.0"
     protected String projectFolder = "src/main"
     protected String sourceFolder = projectFolder + "/java"
-    protected Boolean useAndroidMavenGradlePlugin = true
-    protected Boolean serializableModel = false
-
     // requestPackage and authPackage are used by the "volley" template/library
     protected String requestPackage = "io.swagger.client.request"
     protected String authPackage = "io.swagger.client.auth"
     protected String gradleWrapperPackage = "gradle.wrapper"
-    protected String apiDocPath = "docs/"
-    protected String modelDocPath = "docs/"
 
     AndroidCustomClientCodegen() {
         outputFolder = "generated-code/android"
@@ -72,15 +66,7 @@ class AndroidCustomClientCodegen extends DefaultCodegen implements CodegenConfig
 
         cliOptions.add(new CliOption(CodegenConstants.MODEL_PACKAGE, CodegenConstants.MODEL_PACKAGE_DESC))
         cliOptions.add(new CliOption(CodegenConstants.API_PACKAGE, CodegenConstants.API_PACKAGE_DESC))
-        cliOptions.add(new CliOption(CodegenConstants.INVOKER_PACKAGE, CodegenConstants.INVOKER_PACKAGE_DESC))
-        cliOptions.add(new CliOption(CodegenConstants.GROUP_ID, "groupId for use in the generated build.gradle and pom.xml"))
-        cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_ID, "artifactId for use in the generated build.gradle and pom.xml"))
-        cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_VERSION, "artifact version for use in the generated build.gradle and pom.xml"))
         cliOptions.add(new CliOption(CodegenConstants.SOURCE_FOLDER, CodegenConstants.SOURCE_FOLDER_DESC))
-        cliOptions.add(CliOption.newBoolean(USE_ANDROID_MAVEN_GRADLE_PLUGIN, "A flag to toggle android-maven gradle plugin.")
-                .defaultValue(Boolean.TRUE.toString()))
-
-        cliOptions.add(CliOption.newBoolean(CodegenConstants.SERIALIZABLE_MODEL, CodegenConstants.SERIALIZABLE_MODEL_DESC))
     }
 
 
@@ -290,6 +276,7 @@ class AndroidCustomClientCodegen extends DefaultCodegen implements CodegenConfig
         p.example = example
     }
 
+
     @Override
     String toOperationId(String operationId) {
         // throw exception if method name is empty
@@ -312,60 +299,9 @@ class AndroidCustomClientCodegen extends DefaultCodegen implements CodegenConfig
     @Override
     void processOpts() {
         super.processOpts()
-
-        if (additionalProperties.containsKey(CodegenConstants.INVOKER_PACKAGE)) {
-            this.setInvokerPackage((String) additionalProperties.get(CodegenConstants.INVOKER_PACKAGE))
-        } else {
-            //not set, use default to be passed to template
-            additionalProperties.put(CodegenConstants.INVOKER_PACKAGE, invokerPackage)
-        }
-
-        if (additionalProperties.containsKey(CodegenConstants.GROUP_ID)) {
-            this.setGroupId((String) additionalProperties.get(CodegenConstants.GROUP_ID))
-        } else {
-            //not set, use to be passed to template
-            additionalProperties.put(CodegenConstants.GROUP_ID, groupId)
-        }
-
-        if (additionalProperties.containsKey(CodegenConstants.ARTIFACT_ID)) {
-            this.setArtifactId((String) additionalProperties.get(CodegenConstants.ARTIFACT_ID))
-        } else {
-            //not set, use to be passed to template
-            additionalProperties.put(CodegenConstants.ARTIFACT_ID, artifactId)
-        }
-
-        if (additionalProperties.containsKey(CodegenConstants.ARTIFACT_VERSION)) {
-            this.setArtifactVersion((String) additionalProperties.get(CodegenConstants.ARTIFACT_VERSION))
-        } else {
-            //not set, use to be passed to template
-            additionalProperties.put(CodegenConstants.ARTIFACT_VERSION, artifactVersion)
-        }
-
         if (additionalProperties.containsKey(CodegenConstants.SOURCE_FOLDER)) {
             this.setSourceFolder((String) additionalProperties.get(CodegenConstants.SOURCE_FOLDER))
         }
-
-        if (additionalProperties.containsKey(USE_ANDROID_MAVEN_GRADLE_PLUGIN)) {
-            this.setUseAndroidMavenGradlePlugin(Boolean.valueOf((String) additionalProperties
-                    .get(USE_ANDROID_MAVEN_GRADLE_PLUGIN)))
-        } else {
-            additionalProperties.put(USE_ANDROID_MAVEN_GRADLE_PLUGIN, useAndroidMavenGradlePlugin)
-        }
-
-        if (additionalProperties.containsKey(CodegenConstants.LIBRARY)) {
-            this.setLibrary((String) additionalProperties.get(CodegenConstants.LIBRARY))
-        }
-
-        if (additionalProperties.containsKey(CodegenConstants.SERIALIZABLE_MODEL)) {
-            this.setSerializableModel(Boolean.valueOf(additionalProperties.get(CodegenConstants.SERIALIZABLE_MODEL).toString()))
-        }
-
-        // need to put back serializableModel (boolean) into additionalProperties as value in additionalProperties is string
-        additionalProperties.put(CodegenConstants.SERIALIZABLE_MODEL, serializableModel)
-
-        //make api and model doc path available in mustache template
-        additionalProperties.put("apiDocPath", apiDocPath)
-        additionalProperties.put("modelDocPath", modelDocPath)
 
     }
 
