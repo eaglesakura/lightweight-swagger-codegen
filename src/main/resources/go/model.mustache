@@ -12,6 +12,14 @@ import ({{/imports}}{{#imports}}
 )
 {{/imports}}{{#model}}{{#description}}
 
+
+{{#vars}}{{#isEnum}}
+const (
+    {{#allowableValues}}{{#values}}
+     {{classname}}_{{datatypeWithEnum}}_{{.}} string = "{{.}}"{{/values}}
+     {{/allowableValues}}
+){{/isEnum}}{{/vars}}
+
 // {{{description}}}{{/description}}
 type {{classname}} struct {
 {{#vars}}{{#description}}
@@ -22,7 +30,7 @@ type {{classname}} struct {
 
 func (it *{{classname}}) Valid() bool {
     {{#vars}}
-    if(!gaefire.NewValidator(it.{{name}}).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+    if(!gaefire.NewValidator(it.{{name}}, it.{{name}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
                 Valid()) {
         return false;
     }

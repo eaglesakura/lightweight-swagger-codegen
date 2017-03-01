@@ -28,7 +28,7 @@ type {{{nickname}}}Handler func(controller gaefire.ApiController, context gaefir
 
 func (it *{{{nickname}}}Params) Valid() bool {
 {{#allParams}}
-    if(!gaefire.NewValidator(it.{{paramName}}).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+    if(!gaefire.NewValidator(it.{{paramName}}, it.{{paramName}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
                 Valid()) {
         return false;
     }
@@ -116,3 +116,10 @@ func (it *{{classname}}Controller)Bind{{{nickname}}}(handler {{{nickname}}}Handl
 	}
 }
 {{/operation}}{{/operations}}
+
+
+func (it *{{classname}}Controller)MapHandler(mapper *gaefire.HandleMapper) {
+{{#operations}}{{#operation}}
+    mapper.PutHandler(it.{{{nickname}}})
+{{/operation}}{{/operations}}
+}
