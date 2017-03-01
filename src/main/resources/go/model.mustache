@@ -33,9 +33,7 @@ func (it *{{classname}}) Valid() bool {
 
 func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer runtime.Producer) {
 	writer.WriteHeader(200)
-
-	var err error
-	if !it.Valid() || err = producer.Produce(writer, it); err != nil {
+	if err := producer.Produce(writer, it); err != nil || !it.Valid()  {
 		panic(err) // let the recovery middleware deal with this
 	}
 }

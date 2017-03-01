@@ -1,6 +1,8 @@
 package {{packageName}}
 
 import (
+    "net/http"
+    "strings"
 	"gaefire"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/errors"
@@ -22,7 +24,7 @@ type {{{nickname}}}Params struct {
 {{#allParams}} * @param {{paramName}} {{description}}
 {{/allParams}} * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
  */
-type {{{nickname}}}Handler func(request gaefire.RequestHandler, params *{{{nickname}}}Params) middleware.Responder
+type {{{nickname}}}Handler func(controller gaefire.ApiController, context gaefire.RequestContext, params *{{{nickname}}}Params) middleware.Responder
 
 func (it *{{{nickname}}}Params) Valid() bool {
 {{#allParams}}
@@ -79,3 +81,38 @@ func New{{{nickname}}}Params(binder gaefire.RequestBinder) (*{{{nickname}}}Param
 {{/operation}}
 
 {{/operations}}
+
+type {{classname}}Controller struct {
+{{#operations}}{{#operation}}
+    {{{nickname}}}   gaefire.HandleRequest
+{{/operation}}{{/operations}}
+}
+
+func New{{classname}}Controller() *{{classname}}Controller {
+    result := &{{classname}}Controller{
+    }
+
+{{#operations}}{{#operation}}
+    result.{{{nickname}}}.Path = "{{basePath}}{{path}}"
+    result.{{{nickname}}}.Method = strings.ToUpper("{{httpMethod}}")
+    result.Bind{{{nickname}}}(func(controller gaefire.ApiController, context gaefire.RequestContext, params *{{{nickname}}}Params) middleware.Responder {
+        return controller.NewErrorResponse(context, errors.New(501, "Not Impl {{{nickname}}}"))
+    })
+{{/operation}}{{/operations}}
+
+    return result
+}
+
+{{#operations}}{{#operation}}
+func (it *{{classname}}Controller)Bind{{{nickname}}}(handler {{{nickname}}}Handler) {
+	it.{{{nickname}}}.HandlerFunc = func(controller gaefire.ApiController, context gaefire.RequestContext, request *http.Request) (middleware.Responder) {
+		binder := controller.NewBinder(request)
+		params, err := New{{{nickname}}}Params(binder)
+		if err != nil {
+			return controller.NewErrorResponse(context, err)
+		}
+
+		return handler(controller, context, params)
+	}
+}
+{{/operation}}{{/operations}}
