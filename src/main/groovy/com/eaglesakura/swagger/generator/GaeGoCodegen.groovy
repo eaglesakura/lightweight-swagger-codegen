@@ -167,11 +167,11 @@ class GaeGoCodegen extends DefaultCodegen implements CodegenConfig {
 
     @Override
     String apiFileFolder() {
-        return outputFolder + File.separator + File.separator + "server"
+        return outputFolder + File.separator
     }
 
     String modelFileFolder() {
-        return outputFolder + File.separator + File.separator + "model"
+        return outputFolder + File.separator
     }
 
     @Override
@@ -211,9 +211,29 @@ class GaeGoCodegen extends DefaultCodegen implements CodegenConfig {
 
     @Override
     String toModelName(String name) {
-        // camelize the model name
-        // phone_number => PhoneNumber
-        return camelize(toModelFilename(name))
+        if (!StringUtils.isEmpty(modelNamePrefix)) {
+            name = modelNamePrefix + "_" + name
+        }
+
+        if (!StringUtils.isEmpty(modelNameSuffix)) {
+            name = name + "_" + modelNameSuffix
+        }
+
+        name = sanitizeName(name)
+
+        // model name cannot use reserved keyword, e.g. return
+        if (isReservedWord(name)) {
+            LOGGER.warn(name + " (reserved word) cannot be used as model name. Renamed to " + ("model_" + name))
+            name = "model_" + name // e.g. return => ModelReturn (after camelize)
+        }
+
+        // model name starts with number
+        if (name.matches("^\\d.*")) {
+            LOGGER.warn(name + " (model name starts with number) cannot be used as model name. Renamed to " + ("model_" + name))
+            name = "model_" + name // e.g. 200Response => Model200Response (after camelize)
+        }
+
+        return camelize(underscore(name))
     }
 
     @Override
@@ -240,7 +260,15 @@ class GaeGoCodegen extends DefaultCodegen implements CodegenConfig {
             name = "model_" + name // e.g. 200Response => Model200Response (after camelize)
         }
 
-        return underscore(name)
+        def result = underscore(name)
+        if (result.endsWith("_model")) {
+            result = result.substring(0, result.length() - "_model".length())
+        }
+
+        if (!result.startsWith("model_")) {
+            result = "model_" + result
+        }
+        return result
     }
 
     @Override
@@ -250,7 +278,7 @@ class GaeGoCodegen extends DefaultCodegen implements CodegenConfig {
         // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
 
         // e.g. PetApi.go => pet_api.go
-        return underscore(name) + "_api"
+        return "api_" + underscore(name)
     }
 
     /**
