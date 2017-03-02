@@ -1,9 +1,9 @@
 package {{packageName}}
 
 import (
-	"gaefire"
 	"net/http"
 	"github.com/go-openapi/runtime"
+	"github.com/eaglesakura/swagger-go-core"
 )
 
 {{#models}}{{#imports}}
@@ -28,10 +28,10 @@ type {{classname}} struct {
 {{/vars}}
 }
 
-func (it *{{classname}}) Valid() bool {
+func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     {{#vars}}
-    if(!gaefire.NewValidator(it.{{name}}, it.{{name}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
-                Valid()) {
+    if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+                Valid(factory)) {
         return false;
     }
     {{/vars}}
