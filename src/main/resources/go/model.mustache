@@ -41,7 +41,7 @@ func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
 
 func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer runtime.Producer) {
 	writer.WriteHeader(200)
-	if err := producer.Produce(writer, it); err != nil || !it.Valid()  {
+	if err := producer.Produce(writer, it); err != nil  {
 		panic(err) // let the recovery middleware deal with this
 	}
 }
