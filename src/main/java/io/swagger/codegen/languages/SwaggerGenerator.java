@@ -1,15 +1,14 @@
 package io.swagger.codegen.languages;
 
-import java.io.File;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+
 import io.swagger.codegen.CodegenConfig;
 import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
-import io.swagger.codegen.SupportingFile;
 import io.swagger.models.Swagger;
 import io.swagger.util.Json;
 
@@ -22,7 +21,7 @@ public class SwaggerGenerator extends DefaultCodegen implements CodegenConfig {
         embeddedTemplateDir = templateDir = "swagger";
         outputFolder = "generated-code/swagger";
 
-        supportingFiles.add(new SupportingFile("README.md", "", "README.md"));
+//        supportingFiles.add(new SupportingFile("README.md", "", "README.md"));
     }
 
     @Override

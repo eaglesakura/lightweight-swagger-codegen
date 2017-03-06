@@ -1,0 +1,125 @@
+package {{packageName}}
+
+import (
+    "net/http"
+    "strings"
+	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/eaglesakura/swagger-go-core"
+)
+
+{{#operations}}
+{{#operation}}
+
+type {{{nickname}}}Params struct {
+{{#allParams}}
+	// {{description}}
+	{{paramName}}   *{{{dataType}}}
+{{/allParams}}
+}
+
+/**
+ * {{summary}}
+ * {{notes}}
+{{#allParams}} * @param {{paramName}} {{description}}
+{{/allParams}} * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+ */
+type {{{nickname}}}Handler func(context swagger.RequestContext, params *{{{nickname}}}Params) middleware.Responder
+
+func (it *{{{nickname}}}Params) Valid(factory swagger.ValidatorFactory) bool {
+{{#allParams}}
+    if(!factory.NewValidator(it.{{paramName}}, it.{{paramName}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+                Valid(factory)) {
+        return false;
+    }
+{{/allParams}}
+
+	return true
+}
+
+// Bind from request
+func New{{{nickname}}}Params(binder swagger.RequestBinder, validatorFactory swagger.ValidatorFactory) (*{{{nickname}}}Params, error) {
+    result := &{{{nickname}}}Params{}
+
+    {{#pathParams}}
+    if err := binder.BindPath("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/pathParams}}
+
+    {{#queryParams}}
+    if err := binder.BindQuery("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/queryParams}}
+
+    {{#headerParams}}
+    if err := binder.BindHeader("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/headerParams}}
+
+    {{#formParams}}
+    if err := binder.BindForm("{{baseName}}", "{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/formParams}}
+
+    {{#bodyParam}}
+    if err := binder.BindBody("{{{dataType}}}", &result.{{paramName}} ); err != nil {
+        return nil, err
+    }
+    {{/bodyParam}}
+
+    if !result.Valid(validatorFactory) {
+	    return nil, errors.New(400 /* Bad Request */, "Parameter validate error")
+    }
+
+    return result, nil
+}
+
+{{/operation}}
+
+{{/operations}}
+
+type {{classname}}Controller struct {
+{{#operations}}{{#operation}}
+    {{{nickname}}}   swagger.HandleRequest
+{{/operation}}{{/operations}}
+}
+
+func New{{classname}}Controller() *{{classname}}Controller {
+    result := &{{classname}}Controller{
+    }
+
+{{#operations}}{{#operation}}
+    result.{{{nickname}}}.Path = "{{basePath}}{{path}}"
+    result.{{{nickname}}}.Method = strings.ToUpper("{{httpMethod}}")
+    result.Handle{{{nickname}}}(func(context swagger.RequestContext, params *{{{nickname}}}Params) middleware.Responder {
+        return context.NewBindErrorResponse(errors.New(501, "Not Impl {{{nickname}}}"))
+    })
+{{/operation}}{{/operations}}
+
+    return result
+}
+
+{{#operations}}{{#operation}}
+func (it *{{classname}}Controller)Handle{{{nickname}}}(handler {{{nickname}}}Handler) {
+	it.{{{nickname}}}.HandlerFunc = func(context swagger.RequestContext, request *http.Request) (middleware.Responder) {
+		binder := context.NewRequestBinder(request)
+		params, err := New{{{nickname}}}Params(binder, context.NewValidatorFactory())
+		if err != nil {
+			return context.NewBindErrorResponse(err)
+		}
+
+		return handler(context, params)
+	}
+}
+{{/operation}}{{/operations}}
+
+
+func (it *{{classname}}Controller)MapHandlers(mapper swagger.HandleMapper) {
+{{#operations}}{{#operation}}
+    mapper.PutHandler(it.{{{nickname}}})
+{{/operation}}{{/operations}}
+}
