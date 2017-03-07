@@ -3,9 +3,8 @@ package {{packageName}}
 import (
     "net/http"
     "strings"
-	"github.com/go-openapi/errors"
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/eaglesakura/swagger-go-core"
+    "github.com/eaglesakura/swagger-go-core"
+    "github.com/eaglesakura/swagger-go-core/errors"
 )
 
 {{#operations}}
@@ -24,7 +23,7 @@ type {{{nickname}}}Params struct {
 {{#allParams}} * @param {{paramName}} {{description}}
 {{/allParams}} * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
  */
-type {{{nickname}}}Handler func(context swagger.RequestContext, params *{{{nickname}}}Params) middleware.Responder
+type {{{nickname}}}Handler func(context swagger.RequestContext, params *{{{nickname}}}Params) swagger.Responder
 
 func (it *{{{nickname}}}Params) Valid(factory swagger.ValidatorFactory) bool {
 {{#allParams}}
@@ -95,7 +94,7 @@ func New{{classname}}Controller() *{{classname}}Controller {
 {{#operations}}{{#operation}}
     result.{{{nickname}}}.Path = "{{basePath}}{{path}}"
     result.{{{nickname}}}.Method = strings.ToUpper("{{httpMethod}}")
-    result.Handle{{{nickname}}}(func(context swagger.RequestContext, params *{{{nickname}}}Params) middleware.Responder {
+    result.Handle{{{nickname}}}(func(context swagger.RequestContext, params *{{{nickname}}}Params) swagger.Responder {
         return context.NewBindErrorResponse(errors.New(501, "Not Impl {{{nickname}}}"))
     })
 {{/operation}}{{/operations}}
@@ -105,7 +104,7 @@ func New{{classname}}Controller() *{{classname}}Controller {
 
 {{#operations}}{{#operation}}
 func (it *{{classname}}Controller)Handle{{{nickname}}}(handler {{{nickname}}}Handler) {
-	it.{{{nickname}}}.HandlerFunc = func(context swagger.RequestContext, request *http.Request) (middleware.Responder) {
+	it.{{{nickname}}}.HandlerFunc = func(context swagger.RequestContext, request *http.Request) (swagger.Responder) {
 		binder := context.NewRequestBinder(request)
 		params, err := New{{{nickname}}}Params(binder, context.NewValidatorFactory())
 		if err != nil {

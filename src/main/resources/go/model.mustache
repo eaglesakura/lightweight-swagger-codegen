@@ -2,7 +2,6 @@ package {{packageName}}
 
 import (
 	"net/http"
-	"github.com/go-openapi/runtime"
 	"github.com/eaglesakura/swagger-go-core"
 )
 
@@ -10,17 +9,21 @@ import (
 import ({{/imports}}{{#imports}}
 	"{{import}}"{{/imports}}{{#imports}}
 )
-{{/imports}}{{#model}}{{#description}}
+{{/imports}}{{#model}}
 
 
 {{#vars}}{{#isEnum}}
-const (
-    {{#allowableValues}}{{#values}}
-     {{classname}}_{{datatypeWithEnum}}_{{.}} string = "{{.}}"{{/values}}
-     {{/allowableValues}}
-){{/isEnum}}{{/vars}}
+{{#allowableValues}}{{#values}}
+const {{classname}}_{{datatypeWithEnum}}_{{.}} string = "{{.}}"{{/values}}
+{{/allowableValues}}
+var {{classname}}_{{datatypeWithEnum}} []string = []string{
+{{#allowableValues}}{{#values}}
+    {{classname}}_{{datatypeWithEnum}}_{{.}}, {{/values}}
+{{/allowableValues}}
+}
+{{/isEnum}}{{/vars}}
 
-// {{{description}}}{{/description}}
+// {{{description}}}
 type {{classname}} struct {
 {{#vars}}{{#description}}
 	// {{{description}}}{{/description}}
@@ -30,7 +33,10 @@ type {{classname}} struct {
 
 func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     {{#vars}}
-    if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+    if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).
+                {{#required}}Required(true).{{/required}}
+                {{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+                {{#isEnum}}EnumPattern({{classname}}_{{datatypeWithEnum}}).{{/isEnum}}
                 Valid(factory)) {
         return false;
     }
@@ -39,7 +45,7 @@ func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     return true
 }
 
-func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer runtime.Producer) {
+func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer swagger.Producer) {
 	writer.WriteHeader(200)
 	if err := producer.Produce(writer, it); err != nil  {
 		panic(err) // let the recovery middleware deal with this
