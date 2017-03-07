@@ -2,7 +2,6 @@ package {{packageName}}
 
 import (
 	"net/http"
-	"github.com/go-openapi/runtime"
 	"github.com/eaglesakura/swagger-go-core"
 )
 
@@ -46,7 +45,7 @@ func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     return true
 }
 
-func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer runtime.Producer) {
+func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer swagger.Producer) {
 	writer.WriteHeader(200)
 	if err := producer.Produce(writer, it); err != nil  {
 		panic(err) // let the recovery middleware deal with this
