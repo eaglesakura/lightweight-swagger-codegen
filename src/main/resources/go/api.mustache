@@ -11,6 +11,7 @@ import (
 {{#operation}}
 
 type {{{nickname}}}Params struct {
+    Auth_    interface{}   // Login control
 {{#allParams}}
 	// {{description}}
 	{{paramName}}   *{{{dataType}}}
@@ -69,6 +70,11 @@ func New{{{nickname}}}Params(binder swagger.RequestBinder, validatorFactory swag
         return nil, err
     }
     {{/bodyParam}}
+
+    // Authentication
+    if err := binder.BindExtra(swagger.BindExtra_Authentication, &result.Auth_); err != nil {
+        return nil, err
+    }
 
     if !result.Valid(validatorFactory) {
 	    return nil, errors.New(400 /* Bad Request */, "Parameter validate error")
