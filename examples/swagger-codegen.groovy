@@ -12,7 +12,7 @@
 //      $ ./swagger-codegen.groovy generate -l com.eaglesakura.swagger.generator.GaeGoCodegen -o path/to/output -i path/to/swagger.json -c path/to/config.json
 
 @GrabResolver(name = "eaglesakura", root = "http://eaglesakura.github.io/maven/")
-@Grab("com.eaglesakura:swagger-codegen-lw:1.0.12")
+@Grab("com.eaglesakura:swagger-codegen-lw:1.0.24")
 import java.lang.Object;
 
 static main(String[] args) {
