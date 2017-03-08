@@ -111,8 +111,12 @@ func New{{classname}}Controller() *{{classname}}Controller {
 {{#operations}}{{#operation}}
 func (it *{{classname}}Controller)Handle{{{nickname}}}(handler {{{nickname}}}Handler) {
 	it.{{{nickname}}}.HandlerFunc = func(context swagger.RequestContext, request *http.Request) (swagger.Responder) {
-		binder := context.NewRequestBinder(request)
-		params, err := New{{{nickname}}}Params(binder, context.NewValidatorFactory())
+		binder, err := context.NewRequestBinder(request)
+        if err != nil {
+            return context.NewBindErrorResponse(err)
+        }
+
+        params, err := New{{{nickname}}}Params(binder, context.NewValidatorFactory())
 		if err != nil {
 			return context.NewBindErrorResponse(err)
 		}
