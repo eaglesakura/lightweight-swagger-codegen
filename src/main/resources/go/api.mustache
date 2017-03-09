@@ -7,9 +7,9 @@ import (
     "github.com/eaglesakura/swagger-go-core/errors"
 )
 
+
 {{#operations}}
 {{#operation}}
-
 type {{{nickname}}}Params struct {
 {{#allParams}}
 	// {{description}}
@@ -37,7 +37,7 @@ func (it *{{{nickname}}}Params) Valid(factory swagger.ValidatorFactory) bool {
 }
 
 // Bind from request
-func New{{{nickname}}}Params(binder swagger.RequestBinder, validatorFactory swagger.ValidatorFactory) (*{{{nickname}}}Params, error) {
+func New{{{nickname}}}Params(binder swagger.RequestBinder) (*{{{nickname}}}Params, error) {
     result := &{{{nickname}}}Params{}
 
     {{#pathParams}}
@@ -70,7 +70,7 @@ func New{{{nickname}}}Params(binder swagger.RequestBinder, validatorFactory swag
     }
     {{/bodyParam}}
 
-    if !result.Valid(validatorFactory) {
+    if !result.Valid(binder) {
 	    return nil, errors.New(400 /* Bad Request */, "Parameter validate error")
     }
 
@@ -110,7 +110,7 @@ func (it *{{classname}}Controller)Handle{{{nickname}}}(handler {{{nickname}}}Han
             return context.NewBindErrorResponse(err)
         }
 
-        params, err := New{{{nickname}}}Params(binder, context.NewValidatorFactory())
+        params, err := New{{{nickname}}}Params(binder)
 		if err != nil {
 			return context.NewBindErrorResponse(err)
 		}
