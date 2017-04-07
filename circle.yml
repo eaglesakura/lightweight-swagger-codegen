@@ -13,20 +13,18 @@ machine:
     JAVA_OPTS: -Dfile.encoding=UTF-8 -Xms1024m -Xmx2048m -XX:MaxPermSize=2048m
 dependencies:
   cache_directories:
-    - "/home/ubuntu/android-sdk"
     - "/home/ubuntu/build-cache"
   override:
     - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-dependencies.sh)"
 test:
   override:
-    - echo "skip tests"
-#    - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-test.sh)"
+    - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-test.sh)"
 deployment:
   canary:
     branch: /^v[0-9]\..*$/
     commands:
-    - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-deploy-groovy-maven.sh)"
+      - echo "skip deploy"
   develop:
     branch: develop
     commands:
-    - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-deploy-groovy-local.sh)"
+      - ./gradlew jar groovydoc bintrayUpload

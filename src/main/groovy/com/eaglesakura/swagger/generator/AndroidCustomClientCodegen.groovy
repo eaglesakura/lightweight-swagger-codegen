@@ -16,7 +16,6 @@ class AndroidCustomClientCodegen extends DefaultCodegen implements CodegenConfig
     protected String artifactVersion = "1.0.0"
     protected String projectFolder = "src/main"
     protected String sourceFolder = projectFolder + "/java"
-    // requestPackage and authPackage are used by the "volley" template/library
     protected String requestPackage = "io.swagger.client.request"
     protected String authPackage = "io.swagger.client.auth"
     protected String gradleWrapperPackage = "gradle.wrapper"

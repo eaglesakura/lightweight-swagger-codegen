@@ -1,8 +1,11 @@
 # Light Weight Swagger codegen
 
+`swagger.yaml` もしくは `swagger.json` からクライアント / サーバー用コードを生成します。
+
 ## Support platform.
 
- * Android
+ * Android(Client)
+ * Golang(Server)
 
 ## LICENSE
 
