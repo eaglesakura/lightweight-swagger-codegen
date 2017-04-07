@@ -2,10 +2,44 @@
 
 `swagger.yaml` もしくは `swagger.json` からクライアント / サーバー用コードを生成します。
 
-## Support platform.
+# example.
 
- * Android(Client)
- * Golang(Server)
+```groovy
+@GrabResolver(name = "eaglesakura", root = "https://dl.bintray.com/eaglesakura/maven/")
+@Grab("com.eaglesakura:lightweight-swagger-codegen:version")
+import java.lang.Object;
+
+static main(String[] args) {
+    // Generate swagger.json
+    com.eaglesakura.swagger.generator.Generator.main([
+            "generate",
+            "-l", "io.swagger.codegen.languages.SwaggerGenerator",
+            "-o", "path/to/output/dir",
+            "-i", "path/to/input/swagger.yaml",
+    ] as String[])
+    
+    // Generate Android client binding
+    com.eaglesakura.swagger.generator.Generator.main([
+            "generate",
+            "-l", "com.eaglesakura.swagger.generator.AndroidCustomClientCodegen",
+            "-o", "path/to/output/dir",
+            "-i", "path/to/input/swagger.json",
+            "-c", "path/to/configure/config.json"
+    ] as String[])
+
+    // Generate GAE/Go server binding
+    com.eaglesakura.swagger.generator.Generator.main([
+            "generate",
+            "-l", "com.eaglesakura.swagger.generator.GaeGoCodegen",
+            "-o", "path/to/output/dir",
+            "-i", "path/to/input/swagger.json",
+            "-c", "path/to/configure/config.json"
+    ] as String[])
+
+    // GO formatting
+    println(["go", "fmt", "./path/to/output/dir/..."].execute().text)
+}
+```
 
 ## LICENSE
 
