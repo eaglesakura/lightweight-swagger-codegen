@@ -4,7 +4,7 @@
 def ARTIFACT_VERSION = "1.0"
 def REPOSITORY_NAME = "maven"
 def BINTRAY_LICENSES = ["MIT"]
-def BINTRAY_LABELS = ["android", "plugin"]
+def BINTRAY_LABELS = ["GAE/Go", "Android", "Swagger"]
 def BINTRAY_API_KEY = System.env.BINTRAY_API_KEY
 def BINTRAY_GPG_PASS = System.env.BINTRAY_GPG_PASS
 
