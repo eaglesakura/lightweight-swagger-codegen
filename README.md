@@ -6,7 +6,7 @@
 
 ```groovy
 @GrabResolver(name = "eaglesakura", root = "https://dl.bintray.com/eaglesakura/maven/")
-@Grab("com.eaglesakura:lightweight-swagger-codegen:version")
+@Grab("com.eaglesakura:lightweight-swagger-codegen:35")
 import java.lang.Object;
 
 static main(String[] args) {
