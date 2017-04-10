@@ -1,16 +1,30 @@
 package {{packageName}}
 
+{{#models}}
+{{#model}}
+{{#isEnum}}
+{{#allowableValues}}
+type {{classname}} string
+{{#values}}
+const {{classname}}_{{.}} {{classname}} = {{classname}}("{{.}}")
+{{/values}}{{/allowableValues}}
+func {{classname}}Ptr(v {{classname}}) *{{classname}} {
+    return &v
+}
+
+func {{classname}}Value(v *{{classname}}) {{classname}} {
+    return *v
+}
+{{/isEnum}}
+
+
+
+{{^isEnum}}
+
 import (
-	"net/http"
-	"github.com/eaglesakura/swagger-go-core"
+    "net/http"
+    "github.com/eaglesakura/swagger-go-core"
 )
-
-{{#models}}{{#imports}}
-import ({{/imports}}{{#imports}}
-	"{{import}}"{{/imports}}{{#imports}}
-)
-{{/imports}}{{#model}}
-
 
 {{#vars}}{{#isEnum}}
 {{#allowableValues}}{{#values}}
@@ -51,5 +65,5 @@ func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer swag
 		panic(err) // let the recovery middleware deal with this
 	}
 }
-
+{{/isEnum}}
 {{/model}}{{/models}}
