@@ -13,6 +13,7 @@ import com.eaglesakura.swagger.*;
  * {{description}}
  **/{{/description}}
 {{#isEnum}}
+@Keep
 public enum {{classname}} {
 {{#allowableValues}}{{#values}}
     @Keep {{.}},
@@ -25,7 +26,7 @@ public class {{classname}} {{#parent}}extends {{{parent}}}{{/parent}} implements
         @Keep
         public enum {{datatypeWithEnum}} {
         {{#allowableValues}}{{#values}}@Keep {{.}}, {{/values}}{{/allowableValues}}
-        };
+        }
 
         {{#required}}@NonNull {{/required}}
         @SerializedName("{{baseName}}")

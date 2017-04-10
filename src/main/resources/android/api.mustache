@@ -51,7 +51,7 @@ public class {{classname}} {
 {{#allParams}}   * @param {{paramName}} {{description}}
 {{/allParams}}   * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
    */
-  public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (ApiInvoker invoker{{#allParams}}{{#-first}}, {{/-first}}{{#required}}@NonNull {{/required}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws IOException {
+  public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (SwaggerHttpClient _client{{#allParams}}{{#-first}}, {{/-first}}{{#required}}@NonNull {{/required}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws IOException {
     {{#allParams}}
     if(!new ParameterValidator({{paramName}})
                 {{#required}}.required(true){{/required}}
@@ -65,32 +65,32 @@ public class {{classname}} {
 
     // create path and map variables
     String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString({{{paramName}}})){{/pathParams}};
-    invoker.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
-    invoker.setMethod("{{httpMethod}}");
+    _client.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
+    _client.setMethod("{{httpMethod}}");
 
     {{#queryParams}}
-    invoker.addQueryParam("{{baseName}}", parameterToString({{paramName}}));
+    _client.addQueryParam("{{baseName}}", parameterToString({{paramName}}));
     {{/queryParams}}
 
     {{#headerParams}}
-    invoker.addHeader("{{baseName}}", parameterToString({{paramName}}));
+    _client.addHeader("{{baseName}}", parameterToString({{paramName}}));
     {{/headerParams}}
 
     {{#formParams}}{{#notFile}}
     // form params
     Map<String, String> localVarFormParams = new HashMap<>();
     localVarFormParams.put("{{baseName}}", parameterToString({{paramName}}));
-    invoker.setPayload(toFormPayload(localVarFormParams));
+    _client.setPayload(toFormPayload(localVarFormParams));
     {{/notFile}}{{/formParams}}
 
     {{#bodyParam}}
-    invoker.setPayload(toJsonPayload({{paramName}}));
+    _client.setPayload(toJsonPayload({{paramName}}));
     {{/bodyParam}}
 
     {{#returnType}}
-        return ({{{returnType}}}) SwaggerUtil.invoke(invoker, "{{returnContainer}}", {{returnBaseType}}.class, {{returnBaseType}}[].class);
+        return ({{{returnType}}}) SwaggerUtil.fetch(_client, "{{returnContainer}}", {{returnBaseType}}.class, {{returnBaseType}}[].class);
     {{/returnType}}{{^returnType}}
-        return SwaggerUtil.invoke(invoker, "{{returnContainer}}", Object.class, Object[].class);
+        return SwaggerUtil.fetch(_client, "{{returnContainer}}", Object.class, Object[].class);
     {{/returnType}}
   }
   {{/operation}}
