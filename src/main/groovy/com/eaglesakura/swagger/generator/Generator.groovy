@@ -1,6 +1,5 @@
 package com.eaglesakura.swagger.generator
 
-import com.eaglesakura.util.IOUtil
 import io.swagger.codegen.SwaggerCodegen
 
 class Generator {
