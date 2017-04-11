@@ -8,16 +8,33 @@ type {{classname}} string
 {{#values}}
 const {{classname}}_{{.}} {{classname}} = {{classname}}("{{.}}")
 {{/values}}{{/allowableValues}}
-func {{classname}}Ptr(v {{classname}}) *{{classname}} {
-    return &v
+func (it {{classname}})Ptr() *{{classname}} {
+    return &it
+}
+func (it *{{classname}})Value() {{classname}} {
+    return *it
 }
 
-func {{classname}}Value(v *{{classname}}) {{classname}} {
-    return *v
+// Exist Patterns
+var {{classname}}Pattern []string = []string{
+{{#allowableValues}}{{#values}}
+    "{{.}}", {{/values}}
+{{/allowableValues}}
 }
+func (it *{{classname}})Valid(pattern []string) bool {
+    if it == nil {
+        return false
+    }
+    value := string(*it)
+    for _, v := range pattern {
+        if v == value {
+            return true
+        }
+    }
+    return false
+}
+
 {{/isEnum}}
-
-
 
 {{^isEnum}}
 
@@ -27,13 +44,32 @@ import (
 )
 
 {{#vars}}{{#isEnum}}
+type {{classname}}{{datatypeWithEnum}} string
 {{#allowableValues}}{{#values}}
-const {{classname}}_{{datatypeWithEnum}}_{{.}} string = "{{.}}"{{/values}}
+const {{classname}}{{datatypeWithEnum}}_{{.}} {{classname}}{{datatypeWithEnum}} = {{classname}}{{datatypeWithEnum}}("{{.}}"){{/values}}
 {{/allowableValues}}
-var {{classname}}_{{datatypeWithEnum}} []string = []string{
+var {{classname}}{{datatypeWithEnum}}Pattern []string = []string{
 {{#allowableValues}}{{#values}}
-    {{classname}}_{{datatypeWithEnum}}_{{.}}, {{/values}}
+    "{{.}}", {{/values}}
 {{/allowableValues}}
+}
+func (it {{classname}}{{datatypeWithEnum}})Ptr() *{{classname}}{{datatypeWithEnum}} {
+    return &it
+}
+func (it *{{classname}}{{datatypeWithEnum}})Value() {{classname}}{{datatypeWithEnum}} {
+    return *it
+}
+func (it *{{classname}}{{datatypeWithEnum}})Valid(pattern []string) bool {
+    if it == nil {
+        return false
+    }
+    value := string(*it)
+    for _, v := range pattern {
+        if v == value {
+            return true
+        }
+    }
+    return false
 }
 {{/isEnum}}{{/vars}}
 
@@ -41,7 +77,7 @@ var {{classname}}_{{datatypeWithEnum}} []string = []string{
 type {{classname}} struct {
 {{#vars}}{{#description}}
 	// {{{description}}}{{/description}}
-	{{name}} *{{{datatype}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"`
+	{{name}} *{{#isEnum}}{{classname}}{{datatypeWithEnum}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"`
 {{/vars}}
 }
 
@@ -50,7 +86,7 @@ func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).
                 {{#required}}Required(true).{{/required}}
                 {{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
-                {{#isEnum}}EnumPattern({{classname}}_{{datatypeWithEnum}}).{{/isEnum}}
+                {{#isEnum}}EnumPattern({{classname}}{{datatypeWithEnum}}Pattern).{{/isEnum}}
                 Valid(factory)) {
         return false;
     }
