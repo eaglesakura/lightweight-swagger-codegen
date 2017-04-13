@@ -67,9 +67,9 @@ import com.eaglesakura.swagger.*;
         * {{notes}}
         * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
         */
-        public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (SwaggerHttpClient _client, {{largeCamelizeNickname}}Request _params) throws IOException {
+        public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (SwaggerHttpClient _client, {{largeCamelizeNickname}}Request _request) throws IOException {
         {{#allParams}}
-            if(!new ParameterValidator(_params.{{paramName}})
+            if(!new ParameterValidator(_request.{{paramName}})
             {{#required}}.required(true){{/required}}
             {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
             {{#minLength}}.minLength({{minLength}}){{/minLength}}
@@ -80,28 +80,27 @@ import com.eaglesakura.swagger.*;
         {{/allParams}}
 
         // create path and map variables
-        String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString({{{paramName}}})){{/pathParams}};
+        String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString(_request.{{{paramName}}})){{/pathParams}};
         _client.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
         _client.setMethod("{{httpMethod}}");
 
         {{#queryParams}}
-            _client.addQueryParam("{{baseName}}", parameterToString(_params.{{paramName}}));
+            _client.addQueryParam("{{baseName}}", parameterToString(_request.{{paramName}}));
         {{/queryParams}}
 
         {{#headerParams}}
-            _client.addHeader("{{baseName}}", parameterToString(_params.{{paramName}}));
+            _client.addHeader("{{baseName}}", parameterToString(_request.{{paramName}}));
         {{/headerParams}}
 
         {{#formParams}}{{#notFile}}
             // form params
-            Map
-            <String, String> localVarFormParams = new HashMap<>();
-            localVarFormParams.put("{{baseName}}", parameterToString(_params.{{paramName}}));
+            Map<String, String> localVarFormParams = new HashMap<>();
+            localVarFormParams.put("{{baseName}}", parameterToString(_request.{{paramName}}));
             _client.setPayload(toFormPayload(localVarFormParams));
         {{/notFile}}{{/formParams}}
 
         {{#bodyParam}}
-            _client.setPayload(toJsonPayload(_params.{{paramName}}));
+            _client.setPayload(toJsonPayload(_request.{{paramName}}));
         {{/bodyParam}}
 
         {{#returnType}}
