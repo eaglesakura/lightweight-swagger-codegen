@@ -7,92 +7,109 @@ import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
+import java.math.*;
 
 import android.support.annotation.*;
 import com.eaglesakura.swagger.*;
 
 {{#operations}}
-public class {{classname}} {
-  String basePath = "{{basePath}}";
+    public class {{classname}} {
+    String basePath = "{{basePath}}";
 
-  public void setBasePath(@NonNull String basePath) {
+    public void setBasePath(@NonNull String basePath) {
     this.basePath = basePath;
-  }
-
-  @NonNull
-  public String getBasePath() {
-    return basePath;
-  }
-
-  @NonNull
-  protected String parameterToString(@Nullable Object obj) {
-    return SwaggerUtil.parameterToString(obj);
-  }
-
-  @NonNull
-  protected DataPayload toFormPayload(Map<String, String> form) {
-    return SwaggerUtil.newFormPayload(form);
-  }
-
-  @NonNull
-  protected DataPayload toJsonPayload(Object obj) {
-    return SwaggerUtil.newJsonPayload(obj);
-  }
-
-  @NonNull
-  protected String escapeString(Object obj) {
-    return SwaggerUtil.escapeString(obj);
-  }
-
-  {{#operation}}
-  /**
-   * {{summary}}
-   * {{notes}}
-{{#allParams}}   * @param {{paramName}} {{description}}
-{{/allParams}}   * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
-   */
-  public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (SwaggerHttpClient _client{{#allParams}}{{#-first}}, {{/-first}}{{#required}}@NonNull {{/required}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) throws IOException {
-    {{#allParams}}
-    if(!new ParameterValidator({{paramName}})
-                {{#required}}.required(true){{/required}}
-                {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
-                {{#minLength}}.minLength({{minLength}}){{/minLength}}
-                {{#maxLength}}.minLength({{maxLength}}){{/maxLength}}
-                .valid()) {
-       throw new ParameterValidateFailedException("Missing the required parameter '{{paramName}}' when calling {{nickname}}");
     }
-    {{/allParams}}
 
-    // create path and map variables
-    String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString({{{paramName}}})){{/pathParams}};
-    _client.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
-    _client.setMethod("{{httpMethod}}");
+    @NonNull
+    public String getBasePath() {
+    return basePath;
+    }
 
-    {{#queryParams}}
-    _client.addQueryParam("{{baseName}}", parameterToString({{paramName}}));
-    {{/queryParams}}
+    @NonNull
+    protected String parameterToString(@Nullable Object obj) {
+    return SwaggerUtil.parameterToString(obj);
+    }
 
-    {{#headerParams}}
-    _client.addHeader("{{baseName}}", parameterToString({{paramName}}));
-    {{/headerParams}}
+    @NonNull
+    protected DataPayload toFormPayload(Map<String, String> form) {
+    return SwaggerUtil.newFormPayload(form);
+    }
 
-    {{#formParams}}{{#notFile}}
-    // form params
-    Map<String, String> localVarFormParams = new HashMap<>();
-    localVarFormParams.put("{{baseName}}", parameterToString({{paramName}}));
-    _client.setPayload(toFormPayload(localVarFormParams));
-    {{/notFile}}{{/formParams}}
+    @NonNull
+    protected DataPayload toJsonPayload(Object obj) {
+    return SwaggerUtil.newJsonPayload(obj);
+    }
 
-    {{#bodyParam}}
-    _client.setPayload(toJsonPayload({{paramName}}));
-    {{/bodyParam}}
+    @NonNull
+    protected String escapeString(Object obj) {
+    return SwaggerUtil.escapeString(obj);
+    }
 
-    {{#returnType}}
-        return ({{{returnType}}}) SwaggerUtil.fetch(_client, "{{returnContainer}}", {{returnBaseType}}.class, {{returnBaseType}}[].class);
-    {{/returnType}}{{^returnType}}
-        return SwaggerUtil.fetch(_client, "{{returnContainer}}", Object.class, Object[].class);
-    {{/returnType}}
-  }
-  {{/operation}}
-}
+    {{#operation}}
+
+        /**
+        * {{summary}}
+        * {{notes}}
+        */
+        public static class {{largeCamelizeNickname}}Request {
+        {{#allParams}}
+            /**
+             * {{description}}
+             */
+            {{#required}}@NonNull{{/required}}{{^required}}@Nullable{{/required}}
+            public {{{dataType}}} {{paramName}};
+
+        {{/allParams}}
+        }
+
+        /**
+        * {{summary}}
+        * {{notes}}
+        * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+        */
+        public {{#returnType}}{{{returnType}}} {{/returnType}}{{^returnType}}Object {{/returnType}} {{nickname}} (SwaggerHttpClient _client, {{largeCamelizeNickname}}Request _params) throws IOException {
+        {{#allParams}}
+            if(!new ParameterValidator(_params.{{paramName}})
+            {{#required}}.required(true){{/required}}
+            {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
+            {{#minLength}}.minLength({{minLength}}){{/minLength}}
+            {{#maxLength}}.minLength({{maxLength}}){{/maxLength}}
+            .valid()) {
+            throw new ParameterValidateFailedException("Missing the required parameter '{{paramName}}' when calling {{nickname}}");
+            }
+        {{/allParams}}
+
+        // create path and map variables
+        String localVarPath = "{{path}}".replaceAll("\\{format\\}","json"){{#pathParams}}.replaceAll("\\{" + "{{baseName}}" + "\\}", escapeString({{{paramName}}})){{/pathParams}};
+        _client.setApiPath(SwaggerUtil.addPath(this.basePath, localVarPath));
+        _client.setMethod("{{httpMethod}}");
+
+        {{#queryParams}}
+            _client.addQueryParam("{{baseName}}", parameterToString(_params.{{paramName}}));
+        {{/queryParams}}
+
+        {{#headerParams}}
+            _client.addHeader("{{baseName}}", parameterToString(_params.{{paramName}}));
+        {{/headerParams}}
+
+        {{#formParams}}{{#notFile}}
+            // form params
+            Map
+            <String, String> localVarFormParams = new HashMap<>();
+            localVarFormParams.put("{{baseName}}", parameterToString(_params.{{paramName}}));
+            _client.setPayload(toFormPayload(localVarFormParams));
+        {{/notFile}}{{/formParams}}
+
+        {{#bodyParam}}
+            _client.setPayload(toJsonPayload(_params.{{paramName}}));
+        {{/bodyParam}}
+
+        {{#returnType}}
+            return ({{{returnType}}}) SwaggerUtil.fetch(_client, "{{returnContainer}}", {{returnBaseType}}.class, {{returnBaseType}}[].class);
+        {{/returnType}}{{^returnType}}
+            return SwaggerUtil.fetch(_client, "{{returnContainer}}", Object.class, Object[].class);
+        {{/returnType}}
+        }
+    {{/operation}}
+    }
 {{/operations}}

@@ -35,6 +35,7 @@ public class CodegenOperation {
     public ExternalDocs externalDocs;
     public Map<String, Object> vendorExtensions;
     public String nickname; // legacy support
+    public String largeCamelizeNickname;
     public String operationIdLowerCase; // for mardown documentation
 
     /**

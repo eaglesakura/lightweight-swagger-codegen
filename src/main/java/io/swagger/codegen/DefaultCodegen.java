@@ -3,6 +3,7 @@ package io.swagger.codegen;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
+import com.eaglesakura.util.StringUtil;
 import com.samskivert.mustache.Mustache.Compiler;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -2207,6 +2208,9 @@ public class DefaultCodegen {
         op.formParams = addHasMore(formParams);
         // legacy support
         op.nickname = op.operationId;
+        if (StringUtil.allNotEmpty(op.nickname)) {
+            op.largeCamelizeNickname = op.nickname.substring(0, 1).toUpperCase() + op.nickname.substring(1);
+        }
 
         if (op.allParams.size() > 0) {
             op.hasParams = true;
