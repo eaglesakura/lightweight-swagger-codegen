@@ -89,8 +89,8 @@ class GaeGoCodegen extends DefaultCodegen implements CodegenConfig {
         typeMapping.put("date", "time.Time")
         typeMapping.put("DateTime", "time.Time")
         typeMapping.put("password", "string")
-        typeMapping.put("File", "*os.File")
-        typeMapping.put("file", "*os.File")
+        typeMapping.put("File", "[]byte")
+        typeMapping.put("file", "[]byte")
         // map binary to string as a workaround
         // the correct solution is to use []byte
         typeMapping.put("binary", "string")
