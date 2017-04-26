@@ -81,6 +81,8 @@ type {{classname}} struct {
 {{/vars}}
 }
 
+type {{classname}}Array []{{classname}}
+
 func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
     {{#vars}}
     if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).
@@ -101,5 +103,28 @@ func (it *{{classname}}) WriteResponse(writer http.ResponseWriter, producer swag
 		panic(err) // let the recovery middleware deal with this
 	}
 }
+
+func (arr *{{classname}}Array) Valid(factory swagger.ValidatorFactory) bool {
+    for _, it := range *arr {
+    {{#vars}}
+        if(!factory.NewValidator(it.{{name}}, it.{{name}} == nil).
+        {{#required}}Required(true).{{/required}}
+        {{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
+        {{#isEnum}}EnumPattern({{classname}}{{datatypeWithEnum}}Pattern).{{/isEnum}}
+        Valid(factory)) {
+        return false;
+        }
+    {{/vars}}
+    }
+    return true
+}
+
+func (it *{{classname}}Array) WriteResponse(writer http.ResponseWriter, producer swagger.Producer) {
+    writer.WriteHeader(200)
+    if err := producer.Produce(writer, it); err != nil  {
+        panic(err) // let the recovery middleware deal with this
+    }
+}
+
 {{/isEnum}}
 {{/model}}{{/models}}
