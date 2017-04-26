@@ -31,7 +31,7 @@ import io.swagger.util.Json;
 
 public class InlineModelResolver {
     private Swagger swagger;
-    private boolean skipMatches;
+    private boolean skipMatches = true;
     static Logger LOGGER = LoggerFactory.getLogger(InlineModelResolver.class);
 
     Map<String, Model> addedModels = new HashMap<String, Model>();
