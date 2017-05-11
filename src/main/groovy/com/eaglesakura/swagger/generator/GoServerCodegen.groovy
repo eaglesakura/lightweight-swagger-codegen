@@ -19,7 +19,7 @@ class GoServerCodegen extends DefaultCodegen implements CodegenConfig {
     }
 
     String getName() {
-        return "go"
+        return "go-server"
     }
 
     String getHelp() {
@@ -28,11 +28,11 @@ class GoServerCodegen extends DefaultCodegen implements CodegenConfig {
 
     GoServerCodegen() {
         super()
-        outputFolder = "generated-code/go"
+        outputFolder = "generated-code/go-server"
         modelTemplateFiles.put("model.mustache", ".go")
         apiTemplateFiles.put("api.mustache", ".go")
 
-        embeddedTemplateDir = templateDir = "go"
+        embeddedTemplateDir = templateDir = "go-server"
 
         setReservedWordsLowerCase(
                 Arrays.asList(
