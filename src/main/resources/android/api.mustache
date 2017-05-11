@@ -73,7 +73,7 @@ import com.eaglesakura.swagger.*;
             {{#required}}.required(true){{/required}}
             {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
             {{#minLength}}.minLength({{minLength}}){{/minLength}}
-            {{#maxLength}}.minLength({{maxLength}}){{/maxLength}}
+            {{#maxLength}}.maxLength({{maxLength}}){{/maxLength}}
             .valid()) {
             throw new ParameterValidateFailedException("Missing the required parameter '{{paramName}}' when calling {{nickname}}");
             }

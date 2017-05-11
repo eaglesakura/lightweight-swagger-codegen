@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class GoServerCodegen extends DefaultCodegen implements CodegenConfig {
-    static Logger LOGGER = LoggerFactory.getLogger(GoServerCodegen.class)
+class GoClientCodegen extends DefaultCodegen implements CodegenConfig {
+    static Logger LOGGER = LoggerFactory.getLogger(GoClientCodegen.class)
 
     protected String packageName = "swagger"
     protected String packageVersion = "1.0.0"
@@ -19,20 +19,20 @@ class GoServerCodegen extends DefaultCodegen implements CodegenConfig {
     }
 
     String getName() {
-        return "go"
+        return "go-client"
     }
 
     String getHelp() {
-        return "Generates a Golang Server library."
+        return "Generates a Golang Client library."
     }
 
-    GoServerCodegen() {
+    GoClientCodegen() {
         super()
-        outputFolder = "generated-code/go"
+        outputFolder = "generated-code/go-client"
         modelTemplateFiles.put("model.mustache", ".go")
         apiTemplateFiles.put("api.mustache", ".go")
 
-        embeddedTemplateDir = templateDir = "go"
+        embeddedTemplateDir = templateDir = "go-client"
 
         setReservedWordsLowerCase(
                 Arrays.asList(
@@ -314,7 +314,6 @@ class GoServerCodegen extends DefaultCodegen implements CodegenConfig {
         if (p instanceof ArrayProperty) {
             ArrayProperty ap = (ArrayProperty) p
             Property inner = ap.getItems()
-
             def type = getTypeDeclaration(inner)
 
             if (type.charAt(0) >= 'a' && type.charAt(0) <= 'z') {
