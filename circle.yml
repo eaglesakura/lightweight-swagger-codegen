@@ -24,11 +24,11 @@ deployment:
   release:
     tag: /^v[0-9]\..*$/
     commands:
-      - ./gradlew bintrayUpload
+      - ./gradlew jar groovydoc bintrayUpload
   snapshot:
     branch: /^v[0-9]\..*$/
     commands:
-      - ./gradlew bintrayUpload
+      - ./gradlew jar groovydoc bintrayUpload
   develop:
     branch: develop
     commands:
