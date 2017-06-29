@@ -21,11 +21,15 @@ test:
 #    - sh -c "$(curl -fsSL https://raw.githubusercontent.com/eaglesakura/build-dependencies/master/circleci/build-test.sh)"
     - echo "skip tests..."
 deployment:
-  canary:
+  release:
+    tag: /^v[0-9]\..*$/
+    commands:
+      - ./gradlew bintrayUpload
+  snapshot:
     branch: /^v[0-9]\..*$/
     commands:
-      - echo "skip deploy"
+      - ./gradlew bintrayUpload
   develop:
     branch: develop
     commands:
-      - ./gradlew jar groovydoc bintrayUpload
+      - echo "skip upload"
