@@ -23,7 +23,7 @@ type {{{nickname}}}Params struct {
 {{notes}}
 {{#allParams}} param: {{paramName}} {{description}}
 {{/allParams}} return: {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
- */
+*/
 type {{{nickname}}}Handler func(context swagger.RequestContext, params *{{{nickname}}}Params) swagger.Responder
 
 func (it *{{{nickname}}}Params) Valid(factory swagger.ValidatorFactory) bool {
