@@ -17,11 +17,12 @@ type {{{nickname}}}Params struct {
 {{/allParams}}
 }
 
-/**
- * {{summary}}
- * {{notes}}
-{{#allParams}} * @param {{paramName}} {{description}}
-{{/allParams}} * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+/*
+{{summary}}
+
+{{notes}}
+{{#allParams}} param: {{paramName}} {{description}}
+{{/allParams}} return: {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
  */
 type {{{nickname}}}Handler func(context swagger.RequestContext, params *{{{nickname}}}Params) swagger.Responder
 

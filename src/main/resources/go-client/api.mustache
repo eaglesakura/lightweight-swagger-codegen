@@ -25,24 +25,25 @@ func New{{classname}}() *{{classname}} {
 }
 
     {{#operation}}
-        /**
-        * {{summary}}
-        * {{notes}}
+        /*
+        {{summary}}
+        {{notes}}
         */
         type {{classname}}{{largeCamelizeNickname}}Request struct {
         {{#allParams}}
-            /**
-            * {{description}}
+            /*
+            {{description}}
             */
             {{paramName}}   *{{{dataType}}}
 
         {{/allParams}}
         }
 
-        /**
-        * {{summary}}
-        * {{notes}}
-        * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+        /*
+        {{summary}}
+        {{notes}}
+
+          result: {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
         */
         func (it *{{classname}}){{nickname}}(_client swagger.FetchClient, _request *{{classname}}{{largeCamelizeNickname}}Request, result {{#returnType}}*{{{returnType}}}{{/returnType}}{{^returnType}}interface{} {{/returnType}}) error {
         {{#allParams}}

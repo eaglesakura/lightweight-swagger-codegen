@@ -27,4 +27,5 @@ eglibrary/
 private/
 /output
 /out
-execute.groovy
+
+test.sh
