@@ -113,7 +113,7 @@ func (it *{{classname}}) Valid(factory swagger.ValidatorFactory) bool {
                 {{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
                 {{#isEnum}}EnumPattern({{classname}}{{datatypeWithEnum}}Pattern).{{/isEnum}}
                 Valid(factory)) {
-        return false;
+        return false
     }
     {{/vars}}
 
@@ -135,7 +135,7 @@ func (arr *{{classname}}Array) Valid(factory swagger.ValidatorFactory) bool {
         {{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MinLength({{maxLength}}).{{/maxLength}}
         {{#isEnum}}EnumPattern({{classname}}{{datatypeWithEnum}}Pattern).{{/isEnum}}
         Valid(factory)) {
-        return false;
+        return false
         }
     {{/vars}}
     }

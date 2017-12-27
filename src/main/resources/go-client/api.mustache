@@ -48,7 +48,7 @@ func New{{classname}}() *{{classname}} {
         func (it *{{classname}}){{nickname}}(_client swagger.FetchClient, _request *{{classname}}{{largeCamelizeNickname}}Request, result {{#returnType}}*{{{returnType}}}{{/returnType}}{{^returnType}}interface{} {{/returnType}}) error {
         {{#allParams}}
             if(!_client.NewValidator(_request.{{paramName}}, _request.{{paramName}} == nil).{{#required}}Required(true).{{/required}}{{#pattern}}Pattern("{{pattern}}").{{/pattern}}{{#minLength}}MinLength({{minLength}}).{{/minLength}}{{#maxLength}}MaxLength({{maxLength}}).{{/maxLength}}Valid(_client)) {
-                errors.New(0, "Missing the required parameter '{{paramName}}' when calling {{nickname}}");
+                return errors.New(0, "Missing the required parameter '{{paramName}}' when calling {{nickname}}")
             }
         {{/allParams}}
 
@@ -58,19 +58,19 @@ func New{{classname}}() *{{classname}} {
             {{#pathParams}}
                 localVarPath = strings.Replace(localVarPath, "{" + "{{baseName}}" + "}", utils.EscapeString(*_request.{{{paramName}}}), -1)
             {{/pathParams}}
-            _client.SetApiPath(utils.AddPath(it.BasePath, localVarPath));
-            _client.SetMethod(strings.ToUpper("{{httpMethod}}"));
+            _client.SetApiPath(utils.AddPath(it.BasePath, localVarPath))
+            _client.SetMethod(strings.ToUpper("{{httpMethod}}"))
         }
 
         {{#queryParams}}
             if _request.{{paramName}} != nil {
-                _client.AddQueryParam("{{baseName}}", utils.ParameterToString(_request.{{paramName}}));
+                _client.AddQueryParam("{{baseName}}", utils.ParameterToString(_request.{{paramName}}))
             }
         {{/queryParams}}
 
         {{#headerParams}}
             if _request.{{paramName}} != nil {
-                _client.AddHeader("{{baseName}}", utils.ParameterToString(_request.{{paramName}}));
+                _client.AddHeader("{{baseName}}", utils.ParameterToString(_request.{{paramName}}))
             }
         {{/headerParams}}
 
@@ -78,16 +78,16 @@ func New{{classname}}() *{{classname}} {
             // form params
             localVarFormParams := url.Values{}
             if _request.{{paramName}} != nil {
-                localVarFormParams.Add("{{baseName}}", utils.ParameterToString(_request.{{paramName}}));
+                localVarFormParams.Add("{{baseName}}", utils.ParameterToString(_request.{{paramName}}))
             }
             {{#last}}
-            _client.SetPayload(utils.NewFormPayload(localVarFormParams));
+            _client.SetPayload(utils.NewFormPayload(localVarFormParams))
             {{/last}}
         {{/notFile}}{{/formParams}}
 
         {{#bodyParam}}
             if _request.{{paramName}} != nil {
-                _client.SetPayload(utils.NewJsonPayload(_request.{{paramName}}));
+                _client.SetPayload(utils.NewJsonPayload(_request.{{paramName}}))
             }
         {{/bodyParam}}
 
