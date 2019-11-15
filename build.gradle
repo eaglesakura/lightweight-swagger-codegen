@@ -1,15 +1,3 @@
-/**
- * 1.0.0  : release
- * 1.1.x  : バージョン規則変更
- */
-def ARTIFACT_VERSION = System.env.CIRCLE_TAG == null ?
-        "1.1" : System.env.CIRCLE_TAG.substring(System.env.CIRCLE_TAG.indexOf('v') + 1)
-def REPOSITORY_NAME = "maven"
-def BINTRAY_LICENSES = ["MIT"]
-def BINTRAY_LABELS = ["GAE/Go", "Golang", "Android", "Swagger"]
-def BINTRAY_API_KEY = System.env.BINTRAY_API_KEY
-def BINTRAY_GPG_PASS = System.env.BINTRAY_GPG_PASS
-
 buildscript {
     repositories {
         jcenter()
@@ -20,10 +8,10 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-group = "com.eaglesakura"
-version = ARTIFACT_VERSION + getArtifactVersionSuffix()
+apply from: "configure.gradle.kts"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -58,11 +46,27 @@ dependencies {
     compile 'com.googlecode.lambdaj:lambdaj:2.3.3'
 }
 
-apply plugin: 'maven'
+/**
+ * build option "-Pexecutable"
+ * e.g.)
+ * $ ./gradlew jar -Pexecutable
+ */
+if (hasProperty("executable")) {
+    println("output jar will has all libraries.")
+    jar {
+        manifest {
+            attributes "Main-Class": "com.eaglesakura.swagger.generator.Generator"
+        }
+        from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
+group = artifact_group
+version = artifact_version
 groovydoc {
     groovyClasspath = configurations.groovyDoc
 }
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -73,61 +77,51 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
     from "${buildDir}/docs/groovydoc"
 }
 
+
 artifacts {
     archives sourcesJar
     archives groovydocJar
 }
 
-/**
- * バージョンを取得する
- * CircleCIの場合、バージョン末尾にビルド番号を付与する
- */
-def getArtifactVersionSuffix() {
-    def CIRCLE_TAG = System.env.CIRCLE_TAG
-
-    if (CIRCLE_TAG != null) {
-        // TAGがある場合それを直接利用する
-        return ""
-    }
-
-    if (System.env.CIRCLE_BUILD_NUM != null) {
-        // CircleCIのバージョンが指定されているので、そちらを利用する
-        return ".build-${System.env.CIRCLE_BUILD_NUM}"
-    } else {
-        return ".snapshot"
-    }
-}
-
-apply plugin: 'com.jfrog.bintray'
-apply plugin: 'maven-publish'
-
-publishing {
-    publications {
-        Publication(MavenPublication) {
-            from components.java
-        }
-    }
-}
-
-bintray {
-    user = 'eaglesakura'
-    key = BINTRAY_API_KEY
-    pkg {
-        repo = REPOSITORY_NAME
-        name = file(".").absoluteFile.name
-        licenses = BINTRAY_LICENSES
-        labels = BINTRAY_LABELS
-        issueTrackerUrl = "https://github.com/eaglesakura/${file(".").absoluteFile.name}/issues"
-        vcsUrl = "https://github.com/eaglesakura/${file(".").absoluteFile.name}"
-        version {
-            name = project.version
-            released = new Date()
-            gpg {
-                sign = true
-                passphrase = BINTRAY_GPG_PASS
+if (project.hasProperty("install_snapshot")) {
+    apply plugin: 'maven'
+    println("deploy to mavenLocal()")
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                pom.artifactId = artifact_name
+                repository(url: "file://${System.getProperty('user.home')}/.m2/repository")
             }
         }
     }
-    publications = ['Publication']
-    configurations = ['archives']
+} else {
+    apply plugin: 'com.jfrog.bintray'
+    println("deploy to bintray.")
+    bintray {
+        user = bintray_user
+        key = System.env.BINTRAY_API_KEY
+        publish = true
+        override = true
+        pkg {
+            repo = "maven"
+            name = artifact_name
+            vcsUrl = bintray_vcs_url
+            issueTrackerUrl = "${bintray_vcs_url}/issues"
+            licenses = ["MIT"]
+            labels = bintray_labels
+            version {
+                name = project.version
+                released = new Date()
+                gpg {
+                    sign = true
+                    passphrase = System.env.BINTRAY_GPG_PASS
+                }
+            }
+        }
+        configurations = ['archives']
+    }
 }
+
+
+println ":${project.name}:bintrayUpload  -> ${artifact_group} : ${version}"
+println ":${project.name}:uploadArchives -> file:${System.getProperty('user.home')}/.m2/repository : ${version}"

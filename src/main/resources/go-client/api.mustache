@@ -74,16 +74,19 @@ func New{{classname}}() *{{classname}} {
             }
         {{/headerParams}}
 
+        localVarFormParams := url.Values{}
+        formEnable := false
         {{#formParams}}{{#notFile}}
             // form params
-            localVarFormParams := url.Values{}
+            formEnable = true
             if _request.{{paramName}} != nil {
                 localVarFormParams.Add("{{baseName}}", utils.ParameterToString(_request.{{paramName}}))
             }
-            {{#last}}
-            _client.SetPayload(utils.NewFormPayload(localVarFormParams))
-            {{/last}}
         {{/notFile}}{{/formParams}}
+
+        if formEnable {
+            _client.SetPayload(utils.NewFormPayload(localVarFormParams))
+        }
 
         {{#bodyParam}}
             if _request.{{paramName}} != nil {
