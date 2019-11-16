@@ -1,3 +1,6 @@
+import java.nio.file.Files
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         jcenter()
@@ -57,7 +60,26 @@ if (hasProperty("executable")) {
         manifest {
             attributes "Main-Class": "com.eaglesakura.swagger.generator.Generator"
         }
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
         from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task dockerArtifacts(dependsOn: jar) {
+    group "docker"
+    doLast {
+        def jarFile = fileTree("build/libs").find { it.getName().endsWith(".jar") } as File
+        if (jarFile == null) {
+            throw FileNotFoundException("executable not found")
+        }
+
+        println("include target: ${jarFile}")
+        def dst = file("docker/swagger-codegen.jar")
+        dst.getParentFile().mkdirs()
+        dst.delete()
+        Files.copy(Paths.get(jarFile.absolutePath), Paths.get(dst.absolutePath))
     }
 }
 

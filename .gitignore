@@ -29,3 +29,4 @@ private/
 /out
 
 test.sh
+docker/*.jar
