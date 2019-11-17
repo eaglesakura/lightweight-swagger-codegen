@@ -2,7 +2,27 @@
 
 `swagger.yaml` もしくは `swagger.json` からクライアント / サーバー用コードを生成します。
 
+# docker images
+
+[eaglesakura/swagger-codegen](https://hub.docker.com/r/eaglesakura/swagger-codegen/tags)
+
 # example.
+
+```bash
+# suportes
+# -l   io.swagger.codegen.languages.SwaggerGenerator
+#      com.eaglesakura.swagger.generator.AndroidCodegen
+#      com.eaglesakura.swagger.generator.GoServerCodegen
+#      com.eaglesakura.swagger.generator.GoClientCodegen
+docker run \
+    --rm \
+    -v "$PWD:/workspace" \
+    -w "/workspace" \
+    "eaglesakura/swagger-codegen:__version__" \
+    -l io.swagger.codegen.languages.SwaggerGenerator \
+    -o path/to/output/dir
+    -i path/to/input/swagger.yaml
+```
 
 ```groovy
 @GrabResolver(name = "eaglesakura", root = "https://dl.bintray.com/eaglesakura/maven/")
@@ -21,7 +41,7 @@ static main(String[] args) {
     // Generate Android client binding
     com.eaglesakura.swagger.generator.Generator.main([
             "generate",
-            "-l", "com.eaglesakura.swagger.generator.AndroidCustomClientCodegen",
+            "-l", "com.eaglesakura.swagger.generator.AndroidCodegen",
             "-o", "path/to/output/dir",
             "-i", "path/to/input/swagger.json",
             "-c", "path/to/configure/config.json"
@@ -30,7 +50,7 @@ static main(String[] args) {
     // Generate GAE/Go server binding
     com.eaglesakura.swagger.generator.Generator.main([
             "generate",
-            "-l", "com.eaglesakura.swagger.generator.GaeGoCodegen",
+            "-l", "com.eaglesakura.swagger.generator.GoServerCodegen",
             "-o", "path/to/output/dir",
             "-i", "path/to/input/swagger.json",
             "-c", "path/to/configure/config.json"
