@@ -23,7 +23,7 @@ extra["artifact_version"] = System.getenv("CIRCLE_TAG").let { CIRCLE_TAG ->
     }
 
     return@let when {
-        hasProperty("build_version") -> "$majorMinor.${properties["build_version"]}"
+        hasProperty("build_version") -> properties["build_version"].toString()
         hasProperty("install_snapshot") -> "$majorMinor.99999"
         System.getenv("CIRCLE_BUILD_NUM") != null -> "$majorMinor.build-${System.getenv("CIRCLE_BUILD_NUM")}"
         else -> "$majorMinor.snapshot"
