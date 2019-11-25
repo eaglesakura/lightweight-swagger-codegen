@@ -78,7 +78,7 @@ import com.eaglesakura.swagger.*;
             {{#required}}.required(true){{/required}}
             {{#pattern}}.pattern("{{pattern}}"){{/pattern}}
             {{#minLength}}.minLength({{minLength}}){{/minLength}}
-            {{#maxLength}}.manLength({{maxLength}}){{/maxLength}}
+            {{#maxLength}}.maxLength({{maxLength}}){{/maxLength}}
             .valid()) {
             return false;
             }
