@@ -1,0 +1,97 @@
+version: 2.1
+executors:
+  gcloud:
+    working_directory: /home/circleci/project
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      TZ: Asia/Tokyo
+  android-build:
+    working_directory: /home/circleci/project
+    docker:
+      - image: circleci/android:api-28-alpha
+    environment:
+      TZ: Asia/Tokyo
+      _JAVA_OPTIONS: -Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+      GRADLE_OPTS: -Xmx4g -Dorg.gradle.daemon=false
+  kotlin-jdk8:
+    working_directory: /home/circleci/project
+    docker:
+      - image: azul/zulu-openjdk:8
+    environment:
+      TZ: Asia/Tokyo
+      _JAVA_OPTIONS: -Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+      GRADLE_OPTS: -Xmx4g -Dorg.gradle.daemon=false
+commands:
+  internal-checkout:
+    steps:
+      - checkout
+      - run:
+          name: generate-cache-key
+          command: |
+            echo "${CIRCLE_SHA1}-${CIRCLE_BRANCH:-nil}-${CIRCLE_TAG:-nil}-`date "+%Y%m%d"`" > .cachekey
+            cat .cachekey
+  module-checkout:
+    steps:
+      - internal-checkout
+      - restore_cache:
+          key: configs-{{ checksum ".cachekey" }}
+      - restore_cache:
+          key: gradle-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}
+  module-save-cache:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.gradle
+            - ~/.m2
+          key: gradle-{{ checksum ".circleci/config.yml" }}-{{ checksum "build.gradle" }}
+jobs:
+  configure:
+    executor:
+      name: android-build
+    steps:
+      - internal-checkout
+      - run:
+          name: snapshot-build-number
+          command: |
+            echo "$CIRCLE_BUILD_NUM" > .configs/secrets/build-number.env
+      - save_cache:
+          paths:
+            - .configs/secrets
+          key: configs-{{ checksum ".cachekey" }}
+  ##############################################
+  # deploy in parameters.module
+  ##############################################
+  deploy-to-bintray:
+    executor:
+      name: android-build
+    steps:
+      - module-checkout
+      - run:
+          name: deploy
+          command: ./gradlew jar groovydoc bintrayUpload
+aliases:
+  - &depends-from-deploy
+    requires:
+      - configure
+  - &filter-for-assemble
+    filters:
+      branches:
+        only:
+          - /^v[0-9].*/
+          - /^feature\/id\/.*/
+      tags:
+        only:
+          - /^v[0-9].*/
+workflows:
+  assemble-flow:
+    jobs:
+      - configure:
+          context: bintray-maven
+          <<: *filter-for-assemble
+      - deploy-to-bintray:
+          name: deploy-to-bintray
+          context: bintray-maven
+          <<: *filter-for-assemble
+          <<: *depends-from-deploy
+# EOF

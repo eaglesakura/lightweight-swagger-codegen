@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
     }
 }
 
@@ -27,26 +27,27 @@ configurations {
 }
 
 dependencies {
-    compile gradleApi()
+    implementation gradleApi()
+    implementation 'org.codehaus.groovy:groovy:2.3.3'
     groovyDoc 'org.codehaus.groovy:groovy-groovydoc:2.3.3'
     groovyDoc 'org.codehaus.groovy:groovy-ant:2.3.3'
-    compile 'commons-codec:commons-codec:1.10'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+    implementation 'commons-codec:commons-codec:1.10'
+    testImplementation group: 'junit', name: 'junit', version: '4.11'
 
     // Codegen main
-    compile 'com.eaglesakura:java-commons:2.0.3'
-    compile 'io.swagger:swagger-parser:1.0.25'
-    compile 'io.swagger:swagger-compat-spec-parser:1.0.25'
-    compile 'io.swagger:swagger-core:1.5.12'
-    compile 'com.samskivert:jmustache:1.13'
-    compile 'commons-io:commons-io:2.5'
-    compile 'org.slf4j:slf4j-ext:1.7.24'
-    compile 'org.slf4j:slf4j-api:1.7.24'
-    compile 'org.slf4j:slf4j-simple:1.7.24'
-    compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'commons-cli:commons-cli:1.3.1'
-    compile 'io.airlift:airline:0.7'
-    compile 'com.googlecode.lambdaj:lambdaj:2.3.3'
+    implementation 'com.eaglesakura:java-commons:2.0.3'
+    implementation 'io.swagger:swagger-parser:1.0.25'
+    implementation 'io.swagger:swagger-compat-spec-parser:1.0.25'
+    implementation 'io.swagger:swagger-core:1.5.12'
+    implementation 'com.samskivert:jmustache:1.13'
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'org.slf4j:slf4j-ext:1.7.24'
+    implementation 'org.slf4j:slf4j-api:1.7.24'
+    implementation 'org.slf4j:slf4j-simple:1.7.24'
+    implementation 'org.apache.commons:commons-lang3:3.5'
+    implementation 'commons-cli:commons-cli:1.3.1'
+    implementation 'io.airlift:airline:0.7'
+    implementation 'com.googlecode.lambdaj:lambdaj:2.3.3'
 }
 
 /**
@@ -85,6 +86,9 @@ task dockerArtifacts(dependsOn: jar) {
 
 group = artifact_group
 version = artifact_version
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+
 groovydoc {
     groovyClasspath = configurations.groovyDoc
 }
@@ -106,7 +110,6 @@ artifacts {
 }
 
 if (project.hasProperty("install_snapshot")) {
-    apply plugin: 'maven'
     println("deploy to mavenLocal()")
     uploadArchives {
         repositories {
@@ -117,7 +120,6 @@ if (project.hasProperty("install_snapshot")) {
         }
     }
 } else {
-    apply plugin: 'com.jfrog.bintray'
     println("deploy to bintray.")
     bintray {
         user = bintray_user
