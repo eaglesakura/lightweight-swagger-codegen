@@ -1,0 +1,33 @@
+package {{package}}
+
+// ktlint-disable
+import {{modelPackage}}.*
+import java.util.*
+import java.io.*
+import java.math.*
+import retrofit2.http.*
+
+{{#operations}}
+interface {{classname}} {
+{{#operation}}
+    /**
+    * {{summary}}
+    * {{notes}}
+    *
+{{#allParams}}        * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
+{{/allParams}}
+    * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+    */
+    @{{httpMethod}}("{{path}}")
+    fun {{nickname}}(
+        {{#allParams}}
+            {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
+            {{#isPathParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
+            {{#isQueryParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
+            {{#isFormParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isFormParam}}
+            {{#isBodyParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
+        {{/allParams}}
+    ): {{#returnType}}Call<{{{returnType}}}>{{/returnType}}{{^returnType}}Call<ResponseBody>{{/returnType}}
+{{/operation}}
+}
+{{/operations}}

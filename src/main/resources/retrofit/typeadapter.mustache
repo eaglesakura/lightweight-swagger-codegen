@@ -1,0 +1,29 @@
+{{#apiInfo}}{{#apis}}{{#-first}}package {{{package}}}
+{{/-first}}{{/apis}}{{/apiInfo}}
+object ApiEnumFactory : Factory {
+    {{#models}}{{#model}}{{#isEnum}}
+    object {{classname}}Adapter : JsonAdapter<{{classname}}> {
+        @Throws(IOException::class)
+        override fun fromJson(reader: JsonReader): {{classname}} {
+            return {{classname}}.parse(reader.nextString())
+        }
+
+        @Throws(IOException::class)
+        override fun toJson(writer: JsonWriter, value: {{classname}}) {
+            writer.value(value.toString())
+        }
+
+        override fun toString(): String {
+            return "JsonAdapter({{classname}})"
+        }
+    }
+    {{/isEnum}}{{/model}}{{/models}}
+    override fun create(type: Type, annotations: Set<out Annotation>, moshi: Moshi): JsonAdapter<*>? {
+        return when(type) {
+            {{#models}}{{#model}}{{#isEnum}}
+                {{classname}}::class.java -> {{classname}}Adapter
+            {{/isEnum}}{{/model}}{{/models}}
+            else -> null
+        }
+    }
+}

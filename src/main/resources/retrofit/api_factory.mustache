@@ -1,0 +1,16 @@
+{{#apiInfo}}{{#apis}}{{#-first}}package {{{package}}}
+{{/-first}}{{/apis}}{{/apiInfo}}
+
+
+object ApiFactory {
+    val moshi = Moshi.Builder().add(ApiEnumFactory).build()
+
+{{#apiInfo}}{{#apis}}
+    fun create{{classname}}(baseUrl: String, moshi: Moshi = this.moshi, block: (Retrofit.Builder builder)->Retrofit.Builder = {}) {
+        var builder = Retrofit.Builder()
+                            .baseUrl(baseUrl)
+                            .addConverterFactory(MoshiConverterFactory.create(moshi))
+        return  block(builder).build().create({{classname}}::class.java)
+    }
+{{/apis}}{{/apiInfo}}
+}
