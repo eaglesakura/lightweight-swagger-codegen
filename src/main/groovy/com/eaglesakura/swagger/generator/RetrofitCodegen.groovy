@@ -306,7 +306,7 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
         supportingFiles.add(new SupportingFile("api_factory.mustache",
                 sourceFolder + "/" + apiPackage().replace('.' as char, File.separatorChar), "ApiFactory.kt"));
         supportingFiles.add(new SupportingFile("typeadapter.mustache",
-                sourceFolder + "/" + apiPackage().replace('.' as char, File.separatorChar), "ApiEnumFactory.kt"));
+                sourceFolder + "/" + modelPackage().replace('.' as char, File.separatorChar), "ApiEnumFactory.kt"));
     }
 
 

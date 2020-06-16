@@ -1,7 +1,32 @@
-{{#apiInfo}}{{#apis}}{{#-first}}package {{{package}}}
-{{/-first}}{{/apis}}{{/apiInfo}}
+package {{apiPackage}}
 
+// ktlint-disable
+import {{modelPackage}}.*
+import java.math.*
+import java.util.*
+import java.io.*
+import com.squareup.moshi.*
+import retrofit2.*
+import retrofit2.http.*
 
+/**
+ * Default API Factory.
+ *
+ * e.g.)
+ * // build.gradle
+ * dependencies {
+ *      implementation "com.squareup.retrofit2:retrofit:2.9.0"
+ *      implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
+ * }
+ *
+ * // Example.kt
+ * suspend fun callApiSample() {
+ *      val exampleApi = ApiFactory.createExampleApi("https://example.com")
+ *      exampleApi.fooApi()
+ * }
+ *
+ * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+ */
 object ApiFactory {
     val moshi = Moshi.Builder().add(ApiEnumFactory).build()
 

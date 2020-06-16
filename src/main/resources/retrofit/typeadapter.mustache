@@ -1,5 +1,14 @@
-{{#apiInfo}}{{#apis}}{{#-first}}package {{{package}}}
-{{/-first}}{{/apis}}{{/apiInfo}}
+package {{modelPackage}}
+
+import {{apiPackage}}.*
+import java.math.*
+import java.util.*
+import java.io.*
+import com.squareup.moshi.*
+import retrofit2.*
+import retrofit2.http.*
+
+// ktlint-disable
 object ApiEnumFactory : Factory {
     {{#models}}{{#model}}{{#isEnum}}
     object {{classname}}Adapter : JsonAdapter<{{classname}}> {

@@ -7,55 +7,44 @@ import java.io.*
 import com.squareup.moshi.*
 
 {{#models}}
-    {{#model}}{{#description}}
-        /**
-        * {{description}}
-        **/{{/description}}
+{{#model}}
+    /**
+     * {{description}}
+     *
+     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+     **/
     {{#isEnum}}
-        data class {{classname}}(private val value: String) {
-            @Override
-            fun toString()  {
-                return value
-            }: String
-            companion object {
-        {{#allowableValues}}{{#values}}
-                val {{{.}}} = {{classname}}("{{.}}"),
-        {{/values}}{{/allowableValues}}
-                fun parse(value: String): {{classname}} {
-                    when(value) {
-                        "" -> throw IllegalArgumentException("Invalid enum($value)")
-                        {{#allowableValues}}{{#values}}
-                        "{{{.}}}" -> return {{{.}}}
-                        {{/values}}{{/allowableValues}}
-                        else -> return {{classname}}(value)
-                    }
+    data class {{classname}}(private val value: String) {
+        @Override
+        fun toString(): String {
+            return value
+        }
+        companion object {
+    {{#allowableValues}}{{#values}}
+            val {{{.}}} = {{classname}}("{{.}}"),
+    {{/values}}{{/allowableValues}}
+            fun parse(value: String): {{classname}} {
+                when(value) {
+                    "" -> throw IllegalArgumentException("Invalid enum($value)")
+                    {{#allowableValues}}{{#values}}
+                    "{{{.}}}" -> return {{{.}}}
+                    {{/values}}{{/allowableValues}}
+                    else -> return {{classname}}(value)
                 }
             }
         }
-    {{/isEnum}}
-    {{^isEnum}}
+    }
+{{/isEnum}}
+{{^isEnum}}
+    data class {{classname}}(
+    {{#vars}}
         /**
-         * {{description}}
-         **/
-        data class {{classname}}(
-        {{#vars}}
-            /**
-             * {{{description}}}
-             */
-            @Json(name = "{{baseName}}")
-            val {{name}}: {{{datatype}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}
-        {{/vars}}
-        ) {
-            @Override
-            fun toString()  {
-                return buildString {
-                    append("{{classname}} {")
-                    {{#vars}}append("\n  {{name}}: ${ {{name}} }")
-                    {{/vars}}
-                    append("\n}");
-                }
-            }: String
-        }
-    {{/isEnum}}
-    {{/model}}
+         * {{{description}}}
+         */
+        @Json(name = "{{baseName}}")
+        val {{name}}: {{{datatype}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}
+    {{/vars}}
+    )
+{{/isEnum}}
+{{/model}}
 {{/models}}
