@@ -46,6 +46,10 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
                 "catch", "extends", "int", "short", "try", "char", "final", "interface", "static",
                 "void", "class", "finally", "long", "strictfp", "volatile", "const", "float",
                 "native", "super", "while",
+
+                // Kotlin keywords
+                "in", "out", "init", "is", "as", "fun", "when",
+                "typealias", "typeof", "var", "val",
         ])
 
         languageSpecificPrimitives = new HashSet<String>([
