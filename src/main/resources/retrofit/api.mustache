@@ -1,6 +1,5 @@
 package {{package}}
 
-
 import {{modelPackage}}.* // ktlint-disable
 import java.util.* // ktlint-disable
 import java.io.* // ktlint-disable
@@ -14,65 +13,75 @@ import retrofit2.http.* // ktlint-disable
 interface {{classname}} {
 {{#operation}}
     /**
-    * {{summary}}
-    * {{notes}}
-    *
-{{#allParams}}        * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
+     * {{summary}}
+     * {{notes}}
+     *
+{{#allParams}}     * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
 {{/allParams}}
-    * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
-    * @link https://github.com/eaglesakura/lightweight-swagger-codegen
-    */
+     * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+     */
     @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}(
         {{#allParams}}
+            {{#-first}}@HeaderMap customHeaders: Map<String, String> = emptyMap(),{{/-first}}
             {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
-            {{#isPathParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
-            {{#isQueryParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
-            {{#isFormParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isFormParam}}
-            {{#isBodyParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
+            {{#isPathParam}}@Path("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
+            {{#isQueryParam}}@Query("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
+            {{#isBodyParam}}@Body {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
+        {{/allParams}}
+        {{^allParams}}
+            @HeaderMap customHeaders: Map<String, String> = emptyMap()
         {{/allParams}}
     ): {{#returnType}}Response<{{{returnType}}}>{{/returnType}}{{^returnType}}Response<ResponseBody>{{/returnType}}
 
     /**
-    * {{summary}}
-    * {{notes}}
-    *
-{{#allParams}}        * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
-    {{/allParams}}
-    * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
-    * @link https://github.com/eaglesakura/lightweight-swagger-codegen
-    */
+     * {{summary}}
+     * {{notes}}
+     *
+{{#allParams}}     * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
+{{/allParams}}
+     * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+     */
     @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}Body(
-    {{#allParams}}
-        {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
-        {{#isPathParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
-        {{#isQueryParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
-        {{#isFormParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isFormParam}}
-        {{#isBodyParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
-    {{/allParams}}
+        {{#allParams}}
+            {{#-first}}@HeaderMap customHeaders: Map<String, String> = emptyMap(),{{/-first}}
+            {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
+            {{#isPathParam}}@Path("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
+            {{#isQueryParam}}@Query("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
+            {{#isBodyParam}}@Body {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
+        {{/allParams}}
+        {{^allParams}}
+            @HeaderMap customHeaders: Map<String, String> = emptyMap()
+        {{/allParams}}
     ): Response<ResponseBody>
 
     /**
-    * {{summary}}
-    * {{notes}}
-    *
-{{#allParams}}        * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
-    {{/allParams}}
-    * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
-    * @link https://github.com/eaglesakura/lightweight-swagger-codegen
-    */
+     * {{summary}}
+     * {{notes}}
+     *
+{{#allParams}}     * @param {{{paramName}}} {{{description}}}{{#example}}/ example :: {{{example}}}{{/example}}
+{{/allParams}}
+     * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
+     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+     */
     @Streaming
     @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}Streaming(
-    {{#allParams}}
-        {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
-        {{#isPathParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
-        {{#isQueryParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
-        {{#isFormParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isFormParam}}
-        {{#isBodyParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
-    {{/allParams}}
+        {{#allParams}}
+            {{#-first}}@HeaderMap customHeaders: Map<String, String> = emptyMap(),{{/-first}}
+            {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
+            {{#isPathParam}}@Path("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isPathParam}}
+            {{#isQueryParam}}@Query("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isQueryParam}}
+            {{#isBodyParam}}@Body {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isBodyParam}}
+        {{/allParams}}
+        {{^allParams}}
+            @HeaderMap customHeaders: Map<String, String> = emptyMap()
+        {{/allParams}}
     ): Response<ResponseBody>
 {{/operation}}
+    companion object
 }
 {{/operations}}

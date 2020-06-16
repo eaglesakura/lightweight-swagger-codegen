@@ -1,6 +1,5 @@
 package {{package}}
 
-
 import java.math.* // ktlint-disable
 import java.util.* // ktlint-disable
 import java.io.* // ktlint-disable
@@ -23,12 +22,12 @@ data class {{classname}}(private val value: String) {
         val {{{.}}} = {{classname}}("{{.}}")
 {{/values}}{{/allowableValues}}
         fun parse(value: String): {{classname}} {
-            when(value) {
+            return when(value) {
                 "" -> throw IllegalArgumentException("Invalid enum($value)")
                 {{#allowableValues}}{{#values}}
-                "{{{.}}}" -> return {{{.}}}
+                "{{{.}}}" -> {{{.}}}
                 {{/values}}{{/allowableValues}}
-                else -> return {{classname}}(value)
+                else -> {{classname}}(value)
             }
         }
     }
@@ -49,7 +48,9 @@ data class {{classname}}(
     val {{name}}: {{{datatype}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}
     {{/isEnum}}
 {{/vars}}
-)
+) {
+    companion object
+}
 
 {{#vars}}{{#isEnum}}
 data class {{classname}}{{datatypeWithEnum}}(private val value: String) {
@@ -61,12 +62,12 @@ data class {{classname}}{{datatypeWithEnum}}(private val value: String) {
         val {{{.}}} = {{classname}}{{datatypeWithEnum}}("{{.}}")
 {{/values}}{{/allowableValues}}
         fun parse(value: String): {{classname}}{{datatypeWithEnum}} {
-            when(value) {
+            return when(value) {
                 "" -> throw IllegalArgumentException("Invalid enum($value)")
                 {{#allowableValues}}{{#values}}
-                "{{{.}}}" -> return {{{.}}}
+                "{{{.}}}" -> {{{.}}}
                 {{/values}}{{/allowableValues}}
-                else -> return {{classname}}{{datatypeWithEnum}}(value)
+                else -> {{classname}}{{datatypeWithEnum}}(value)
             }
         }
     }
