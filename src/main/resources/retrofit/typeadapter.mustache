@@ -1,24 +1,27 @@
 package {{modelPackage}}
 
-import {{apiPackage}}.*
-import java.math.*
-import java.util.*
-import java.io.*
-import com.squareup.moshi.*
-import retrofit2.*
-import retrofit2.http.*
+import {{apiPackage}}.* // ktlint-disable
+import java.math.* // ktlint-disable
+import java.util.* // ktlint-disable
+import java.io.* // ktlint-disable
+import com.squareup.moshi.* // ktlint-disable
+import retrofit2.* // ktlint-disable
+import retrofit2.http.* // ktlint-disable
+import java.lang.reflect.Type
 
-// ktlint-disable
-object ApiEnumFactory : Factory {
+object ApiEnumFactory : JsonAdapter.Factory {
     {{#models}}{{#model}}{{#isEnum}}
-    object {{classname}}Adapter : JsonAdapter<{{classname}}> {
+    val {{classname}}Adapter = object : JsonAdapter<{{classname}}>() {
         @Throws(IOException::class)
         override fun fromJson(reader: JsonReader): {{classname}} {
             return {{classname}}.parse(reader.nextString())
         }
 
         @Throws(IOException::class)
-        override fun toJson(writer: JsonWriter, value: {{classname}}) {
+        override fun toJson(writer: JsonWriter, value: {{classname}}?) {
+            if(value == null) {
+                return
+            }
             writer.value(value.toString())
         }
 

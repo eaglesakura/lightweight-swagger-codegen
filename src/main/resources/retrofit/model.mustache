@@ -1,50 +1,49 @@
 package {{package}}
 
-// ktlint-disable
-import java.math.*
-import java.util.*
-import java.io.*
-import com.squareup.moshi.*
+
+import java.math.* // ktlint-disable
+import java.util.* // ktlint-disable
+import java.io.* // ktlint-disable
+import com.squareup.moshi.* // ktlint-disable
 
 {{#models}}
 {{#model}}
-    /**
-     * {{description}}
-     *
-     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
-     **/
-    {{#isEnum}}
-    data class {{classname}}(private val value: String) {
-        @Override
-        fun toString(): String {
-            return value
-        }
-        companion object {
-    {{#allowableValues}}{{#values}}
-            val {{{.}}} = {{classname}}("{{.}}"),
-    {{/values}}{{/allowableValues}}
-            fun parse(value: String): {{classname}} {
-                when(value) {
-                    "" -> throw IllegalArgumentException("Invalid enum($value)")
-                    {{#allowableValues}}{{#values}}
-                    "{{{.}}}" -> return {{{.}}}
-                    {{/values}}{{/allowableValues}}
-                    else -> return {{classname}}(value)
-                }
+/**
+ * {{description}}
+ *
+ * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+ **/
+{{#isEnum}}
+data class {{classname}}(private val value: String) {
+    override fun toString(): String {
+        return value
+    }
+    companion object {
+{{#allowableValues}}{{#values}}
+        val {{{.}}} = {{classname}}("{{.}}")
+{{/values}}{{/allowableValues}}
+        fun parse(value: String): {{classname}} {
+            when(value) {
+                "" -> throw IllegalArgumentException("Invalid enum($value)")
+                {{#allowableValues}}{{#values}}
+                "{{{.}}}" -> return {{{.}}}
+                {{/values}}{{/allowableValues}}
+                else -> return {{classname}}(value)
             }
         }
     }
+}
 {{/isEnum}}
 {{^isEnum}}
-    data class {{classname}}(
-    {{#vars}}
-        /**
-         * {{{description}}}
-         */
-        @Json(name = "{{baseName}}")
-        val {{name}}: {{{datatype}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}
-    {{/vars}}
-    )
+data class {{classname}}(
+{{#vars}}
+    /**
+     * {{{description}}}
+     */
+    @Json(name = "{{baseName}}")
+    val {{name}}: {{{datatype}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}
+{{/vars}}
+)
 {{/isEnum}}
 {{/model}}
 {{/models}}

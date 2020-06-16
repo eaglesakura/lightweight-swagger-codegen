@@ -1,11 +1,14 @@
 package {{package}}
 
-// ktlint-disable
-import {{modelPackage}}.*
-import java.util.*
-import java.io.*
-import java.math.*
-import retrofit2.http.*
+
+import {{modelPackage}}.* // ktlint-disable
+import java.util.* // ktlint-disable
+import java.io.* // ktlint-disable
+import java.math.* // ktlint-disable
+import retrofit2.Response // ktlint-disable
+import okhttp3.ResponseBody // ktlint-disable
+import retrofit2.* // ktlint-disable
+import retrofit2.http.* // ktlint-disable
 
 {{#operations}}
 interface {{classname}} {
@@ -19,7 +22,7 @@ interface {{classname}} {
     * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
     */
-    @{{httpMethod}}("{{path}}")
+    @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}(
         {{#allParams}}
             {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
@@ -39,7 +42,7 @@ interface {{classname}} {
     * @return {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}}
     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
     */
-    @{{httpMethod}}("{{path}}")
+    @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}Body(
     {{#allParams}}
         {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}
@@ -60,7 +63,7 @@ interface {{classname}} {
     * @link https://github.com/eaglesakura/lightweight-swagger-codegen
     */
     @Streaming
-    @{{httpMethod}}("{{path}}")
+    @{{httpMethod}}("{{basePath}}{{path}}")
     suspend fun {{nickname}}Streaming(
     {{#allParams}}
         {{#isHeaderParam}}@Header("{{{baseName}}}") {{{paramName}}}: {{{dataType}}}{{^required}}? = null{{/required}}{{#hasMore}}, {{/hasMore}}{{/isHeaderParam}}

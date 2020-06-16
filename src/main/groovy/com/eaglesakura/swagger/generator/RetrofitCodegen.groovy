@@ -1,6 +1,7 @@
 package com.eaglesakura.swagger.generator
 
 import io.swagger.codegen.*
+import io.swagger.models.Swagger
 import io.swagger.models.properties.ArrayProperty
 import io.swagger.models.properties.MapProperty
 import io.swagger.models.properties.Property
@@ -309,6 +310,14 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
                 sourceFolder + "/" + modelPackage().replace('.' as char, File.separatorChar), "ApiEnumFactory.kt"));
     }
 
+    @Override
+    void preprocessSwagger(Swagger swagger) {
+        super.preprocessSwagger(swagger)
+        def basePath = swagger.getBasePath()
+        if (basePath.endsWith("/")) {
+            swagger.setBasePath(basePath.substring(0, basePath.length() - 1))
+        }
+    }
 
     Boolean getUseAndroidMavenGradlePlugin() {
         return useAndroidMavenGradlePlugin
