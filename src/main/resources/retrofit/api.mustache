@@ -6,9 +6,30 @@ import java.io.* // ktlint-disable
 import java.math.* // ktlint-disable
 import retrofit2.Response // ktlint-disable
 import okhttp3.ResponseBody // ktlint-disable
+import okhttp3.OkHttpClient // ktlint-disable
 import retrofit2.* // ktlint-disable
 import retrofit2.http.* // ktlint-disable
+import com.squareup.moshi.* // ktlint-disable
+import retrofit2.converter.moshi.* // ktlint-disable
 
+/**
+ * {{classname}} Client.
+ *
+ * e.g.)
+ * // build.gradle
+ * dependencies {
+ *      implementation "com.squareup.retrofit2:retrofit:2.9.0"
+ *      implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
+ * }
+ *
+ * // Example.kt
+ * suspend fun callApiSample() {
+ *      val exampleApi: {{classname}} = {{classname}}.create("https://example.com")
+ *      exampleApi.fooApi()
+ * }
+ *
+ * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+ */
 {{#operations}}
 interface {{classname}} {
 {{#operation}}
@@ -82,6 +103,27 @@ interface {{classname}} {
         {{/allParams}}
     ): Response<ResponseBody>
 {{/operation}}
-    companion object
+    companion object {
+        /**
+         * Default {{classname}} Factory.
+         *
+         * @link https://github.com/eaglesakura/lightweight-swagger-codegen
+         */
+        fun create(baseUrl: String, okHttpClient: OkHttpClient? = null, moshi: Moshi = InternalUtils.moshi, block: (builder: Retrofit.Builder)->Retrofit.Builder = { it }): {{classname}} {
+            val url = if(baseUrl.endsWith("/")) {
+                baseUrl
+            } else {
+                "$baseUrl/"
+            }
+            val builder = Retrofit.Builder()
+                                .baseUrl(url)
+                                .addConverterFactory(MoshiConverterFactory.create(moshi))
+            if(okHttpClient != null) {
+                builder.client(okHttpClient)
+            }
+            return  block(builder).build().create({{classname}}::class.java)
+        }
+    }
 }
+
 {{/operations}}

@@ -7,40 +7,10 @@ import java.io.* // ktlint-disable
 import com.squareup.moshi.* // ktlint-disable
 import retrofit2.* // ktlint-disable
 import retrofit2.http.* // ktlint-disable
-import retrofit2.converter.moshi.* // ktlint-disable
 
-/**
- * Default API Factory.
- *
- * e.g.)
- * // build.gradle
- * dependencies {
- *      implementation "com.squareup.retrofit2:retrofit:2.9.0"
- *      implementation "com.squareup.retrofit2:converter-moshi:2.4.0"
- * }
- *
- * // Example.kt
- * suspend fun callApiSample() {
- *      val exampleApi = ApiFactory.createExampleApi("https://example.com")
- *      exampleApi.fooApi()
- * }
- *
- * @link https://github.com/eaglesakura/lightweight-swagger-codegen
- */
-object ApiFactory {
-    val moshi = Moshi.Builder().add(ApiEnumFactory).build()
-
-{{#apiInfo}}{{#apis}}
-    fun create{{classname}}(baseUrl: String, moshi: Moshi = this.moshi, block: (builder: Retrofit.Builder)->Retrofit.Builder = { it }): {{classname}} {
-        val url = if(baseUrl.endsWith("/")) {
-            baseUrl
-        } else {
-            "$baseUrl/"
-        }
-        val builder = Retrofit.Builder()
-                            .baseUrl(url)
-                            .addConverterFactory(MoshiConverterFactory.create(moshi))
-        return  block(builder).build().create({{classname}}::class.java)
-    }
-{{/apis}}{{/apiInfo}}
+internal object InternalUtils {
+    val moshi = Moshi.Builder()
+        .add(ApiEnumFactory)
+        .add(KotlinJsonAdapterFactory())
+        .build()
 }

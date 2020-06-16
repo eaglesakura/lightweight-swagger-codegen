@@ -21,6 +21,25 @@ data class {{classname}}(private val value: String) {
 {{#allowableValues}}{{#values}}
         val {{{.}}} = {{classname}}("{{.}}")
 {{/values}}{{/allowableValues}}
+
+        val MoshiTypeAdapter = object : JsonAdapter<{{classname}}>() {
+            @Throws(IOException::class)
+            override fun fromJson(reader: JsonReader): {{classname}} {
+                return parse(reader.nextString())
+            }
+
+            @Throws(IOException::class)
+            override fun toJson(writer: JsonWriter, value: {{classname}}?) {
+                if(value == null) {
+                    return
+                }
+                writer.value(value.toString())
+            }
+
+            override fun toString(): String {
+                return "JsonAdapter({{classname}})"
+            }
+        }
         fun parse(value: String): {{classname}} {
             return when(value) {
                 "" -> throw IllegalArgumentException("Invalid enum($value)")
@@ -61,6 +80,24 @@ data class {{classname}}{{datatypeWithEnum}}(private val value: String) {
 {{#allowableValues}}{{#values}}
         val {{{.}}} = {{classname}}{{datatypeWithEnum}}("{{.}}")
 {{/values}}{{/allowableValues}}
+        val MoshiTypeAdapter = object : JsonAdapter<{{classname}}{{datatypeWithEnum}}>() {
+            @Throws(IOException::class)
+            override fun fromJson(reader: JsonReader): {{classname}}{{datatypeWithEnum}} {
+                return parse(reader.nextString())
+            }
+
+            @Throws(IOException::class)
+            override fun toJson(writer: JsonWriter, value: {{classname}}{{datatypeWithEnum}}?) {
+                if(value == null) {
+                    return
+                }
+                writer.value(value.toString())
+            }
+
+            override fun toString(): String {
+                return "JsonAdapter({{classname}}{{datatypeWithEnum}})"
+            }
+        }
         fun parse(value: String): {{classname}}{{datatypeWithEnum}} {
             return when(value) {
                 "" -> throw IllegalArgumentException("Invalid enum($value)")
