@@ -33,8 +33,13 @@ object ApiFactory {
 
 {{#apiInfo}}{{#apis}}
     fun create{{classname}}(baseUrl: String, moshi: Moshi = this.moshi, block: (builder: Retrofit.Builder)->Retrofit.Builder = { it }): {{classname}} {
+        val url = if(baseUrl.endsWith("/")) {
+            baseUrl
+        } else {
+            "$baseUrl/"
+        }
         val builder = Retrofit.Builder()
-                            .baseUrl(baseUrl)
+                            .baseUrl(url)
                             .addConverterFactory(MoshiConverterFactory.create(moshi))
         return  block(builder).build().create({{classname}}::class.java)
     }

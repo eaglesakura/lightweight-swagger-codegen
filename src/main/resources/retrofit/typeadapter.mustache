@@ -30,11 +30,35 @@ object ApiEnumFactory : JsonAdapter.Factory {
         }
     }
     {{/isEnum}}{{/model}}{{/models}}
+
+    {{#models}}{{#model}}{{#vars}}{{#isEnum}}
+    val {{classname}}{{datatypeWithEnum}}Adapter = object : JsonAdapter<{{classname}}{{datatypeWithEnum}}>() {
+        @Throws(IOException::class)
+        override fun fromJson(reader: JsonReader): {{classname}}{{datatypeWithEnum}} {
+            return {{classname}}{{datatypeWithEnum}}.parse(reader.nextString())
+        }
+
+        @Throws(IOException::class)
+        override fun toJson(writer: JsonWriter, value: {{classname}}{{datatypeWithEnum}}?) {
+            if(value == null) {
+                return
+            }
+            writer.value(value.toString())
+        }
+
+        override fun toString(): String {
+            return "JsonAdapter({{classname}}{{datatypeWithEnum}})"
+        }
+    }
+    {{/isEnum}}{{/vars}}{{/model}}{{/models}}
     override fun create(type: Type, annotations: Set<out Annotation>, moshi: Moshi): JsonAdapter<*>? {
         return when(type) {
             {{#models}}{{#model}}{{#isEnum}}
                 {{classname}}::class.java -> {{classname}}Adapter
             {{/isEnum}}{{/model}}{{/models}}
+            {{#models}}{{#model}}{{#vars}}{{#isEnum}}
+                {{classname}}{{datatypeWithEnum}}::class.java -> {{classname}}{{datatypeWithEnum}}Adapter
+            {{/isEnum}}{{/vars}}{{/model}}{{/models}}
             else -> null
         }
     }
