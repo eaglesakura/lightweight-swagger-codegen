@@ -304,9 +304,9 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
         if (additionalProperties.containsKey(CodegenConstants.SOURCE_FOLDER)) {
             this.setSourceFolder((String) additionalProperties.get(CodegenConstants.SOURCE_FOLDER))
         }
-        supportingFiles.add(new SupportingFile("api_factory.mustache",
-                sourceFolder + "/" + apiPackage().replace('.' as char, File.separatorChar), "ApiFactory.kt"));
-        supportingFiles.add(new SupportingFile("typeadapter.mustache",
+        supportingFiles.add(new SupportingFile("internal_utils.mustache",
+                sourceFolder + "/" + apiPackage().replace('.' as char, File.separatorChar), "InternalUtils.kt"));
+        supportingFiles.add(new SupportingFile("api_enum_factory.mustache",
                 sourceFolder + "/" + modelPackage().replace('.' as char, File.separatorChar), "ApiEnumFactory.kt"));
     }
 
