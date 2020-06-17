@@ -57,7 +57,7 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
                 "boolean",
                 "Boolean",
                 "Double",
-                "Integer",
+                "Int",
                 "Long",
                 "Float",
                 "byte[]",
@@ -69,6 +69,7 @@ class RetrofitCodegen extends DefaultCodegen implements CodegenConfig {
         instantiationTypes.put("map", "HashMap")
         typeMapping.put("date", "Date")
         typeMapping.put("file", "FileContent")
+        typeMapping.put("integer", "Int")
 
         cliOptions.add(new CliOption(CodegenConstants.MODEL_PACKAGE, CodegenConstants.MODEL_PACKAGE_DESC))
         cliOptions.add(new CliOption(CodegenConstants.API_PACKAGE, CodegenConstants.API_PACKAGE_DESC))
